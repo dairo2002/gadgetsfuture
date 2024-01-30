@@ -1,0 +1,108 @@
+{% extends 'base.html' %}
+{% block content %}
+  <div class="d-flex justify-content-center">
+    <div class="col-12 col-md-10 my-5">
+      <div class="row">
+        {% comment %} {% if 'search' in request.path %}
+          <h2>Resultado de la busqueda</h2>
+        {% else %}
+          <h2>Hola</h2>
+        {% endif %} {% endcomment %}
+        <div class="col-4 col-md-3">
+          <div class="card">
+            <h5 class="card-header">Categorías</h5>
+            <div class="card-body">
+              <ul class="list-unstyled">
+                <li>
+                  <a href="{% url 'tienda' %}" class="text-decoration-none text-dark">Todos los productos</a>
+                </li>
+                {% for enlaces in enlace_categoria %}
+                  <li>
+                    <a href="{{ enlaces.get_url_categoria }}" class="text-decoration-none text-dark">{{ enlaces.nombre }}</a>
+                  </li>
+                {% endfor %}
+              </ul>
+            </div>
+          </div>
+        </div>
+        <div class="col-8 col-md-9">
+          <p>
+            <strong>{{ contador_producto }}</strong> Productos
+          </p>
+          <hr my-3 />
+          <div class="card bg-body-tertiary pt-3 p-md-3">
+            <div class="row">
+              <!-- Condicion del campo de busque de productos, si exite muestra el producto -->
+              {% if producto %}
+                <!-- Se recorre Bucle for mostrando todos los productos, con sus expecificaciones -->
+                {% for productos in producto %}
+                  <div class="col-10 col-md-6 col-xl-4 mx-auto mb-4">
+                    <div class="card h-100 border-1">
+                      <div class="card-body">
+                        <a href="{{ productos.get_url_producto }}" class=""><img src="{{ productos.imagen.url }}" class="card-img-top rounded-3 mb-2" alt="imagen producto" /></a>
+                        <h5 class="card-title">{{ productos.nombre }}</h5>
+                        <p class="fw-semibold opacity-75">{{ productos.precio }}</p>
+                        <a href="{{ productos.get_url_producto }}" class="btn btn-primary w-100">Detalle producto</a>
+                      </div>
+                    </div>
+                  </div>
+                {% endfor %}
+                <!-- Si no exite -->
+              {% else %}
+                <h3>No se encontraron productos relacionado con la palabra<Strong>{{ txtBuscar }}</Strong></h3>
+              {% endif %}
+            </div>
+          </div>
+
+          <!-- Paginacion -->
+          <nav aria-label="Page navigation example ">
+            {% if producto.has_other_pages %}
+              <ul class="pagination mt-3">
+                <!-- pagina anterior has_previous -->
+                {% if producto.has_previous %}
+                  <li class="page-item">
+                    <!--                          número de la página anterior 
+                        - pagina, en la vista es llamado por el get                         -->
+                    <a class="page-link" href="?pagina={{ producto.previous_page_number }}">Anterior</a>
+                  </li>
+                {% else %}
+                  <!-- Si no puede devolverse mas, se bloquea el boton -->
+                  <li class="page-item disabled">
+                    <a class="page-link" href="#">Anterior</a>
+                  </li>
+                {% endif %}
+
+                {% for p in producto.paginator.page_range %}
+                  <!--                        Numeros de la paginacion 
+                Comprueba si el numero de la pagina es que corresponde                       -->
+                  {% if producto.number == p %}
+                    <li class="page-item">
+                      <a class="page-link" href="#">{{ p }}</a>
+                    </li>
+                  {% else %}
+                    <!-- El número de página actual no es igual a p, significa que esta no es la página actual. -->
+                    <li class="page-item">
+                      <a class="page-link" href="?pagina={{ p }}">{{ p }}</a>
+                    </li>
+                  {% endif %}
+                {% endfor %}
+
+                {% if producto.has_next %}
+                  <!-- pagina despue has_previous -->
+                  <li class="page-item">
+                    <a class="page-link" href="?pagina={{ producto.next_page_number }}">Después</a>
+                  </li>
+                {% else %}
+                  <li class="page-item disabled">
+                    <a class="page-link" href="#">Después</a>
+                  </li>
+                {% endif %}
+              </ul>
+            {% endif %}
+          </nav>
+          <!-- End paginacion -->
+        </div>
+      </div>
+    </div>
+  </div>
+{% endblock %}

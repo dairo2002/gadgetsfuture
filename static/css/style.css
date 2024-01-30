@@ -1,0 +1,94 @@
+@import url('https://fonts.googleapis.com/css2?family=Quicksand:wght@300;500;700&display=swap');
+
+body {
+    font-family: 'Quicksand';
+}
+
+/* .navbar,
+.header,
+.footer {
+    background-color: #d2c9ff;
+} */
+
+.imgRedes {
+    width: 30px;
+    height: 30px;
+}
+
+.imgContactos {
+    width: 27px;
+    margin-right: 10px;
+}
+
+/* .input-group input {    
+    background-color: #d2c9ff;
+    border-radius: 20px;
+} */
+
+.campoBuscar {
+    width: 450px;
+}
+
+.input-group input:focus {
+    box-shadow: none;
+}
+
+.btn-buscar {
+    border-radius: 20px;
+}
+
+/* .btns_user_cart {
+    border-radius: 50%;
+    background-color: #482adb;
+    border: 2px solid white;
+    width: 45px;
+    height: 45px;
+}
+
+.btns_user_cart:hover {
+    border: 2px solid white;
+    background-color: #d2c9ff;    
+} */
+
+.btnCarrito {
+    background-color: #625a89;
+}
+
+.btnCarrito:hover {
+    /* background-color: #3c3076; */
+    box-shadow: none;
+}
+
+
+.radius-menu {
+    width: 35px;
+    height: 35px;
+    border-radius: 50%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding: 4px;
+    border: 2px solid rgb(144, 143, 143);
+    background-color: white;
+}
+
+.radius-menu:focus {
+    box-shadow: none;
+}
+
+
+.btnAgregarALCarrito {
+    background-color: #d2c9ff;
+    border: 0;
+}
+
+.btnAgregarALCarrito:hover {
+    background-color: #d2c9ff;
+    border: 0;
+}
+
+
+.offcanvas-footer {
+    background-color: #9eb8fa;
+}
+
