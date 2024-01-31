@@ -63,45 +63,5 @@
   </div>
 </nav>
 
-<!-- canva carrito de compras -->
-<div class="offcanvas offcanvas-end" tabindex="-1" id="offcanvasExample" aria-labelledby="offcanvasExampleLabel">
-  <div class="offcanvas-header">
-    <h5 class="offcanvas-title fw-semibold" id="offcanvasExampleLabel">Carrito de compras</h5>
-    <button type="button" class="btn-close" data-bs-dismiss="offcanvas" aria-label="Close"></button>
-  </div>
-  <div class="offcanvas-body">
-    {% for articulo in articulo_carrito %}
-      <div class="card mb-3 border-2 border-secondary-subtle">
-        <div class="row g-0">
-          <div class="col-md-4 my-auto">
-            <img src="{{ articulo.producto.imagen.url }}" alt="imagen producto carrito" class="img-fluid rounded-3 mx-2" />
-          </div>
-          <div class="col-md-8">
-            <div class="card-body">
-              <div class="d-flex justify-content-between align-items-center">
-                <h6 class="card-title">{{ articulo.producto.nombre }}</h6>
-                <a class="btn btn-sm mb-2"><i class="fa-solid fa-trash fa-xl"></i></a>
-              </div>
-              <p class="text-muted m-0">$ {{ articulo.producto.precio }}</p>
+{% include "tienda/canvasCarrito.html" %}
 
-              <div class="d-flex align-items-center mt-2">
-                <p class="text-muted mb-0 me-2">cantidad</p>
-                <input type="number" min="0" class="form-control form-control-sm border-2 border-secondary-subtle w-50" />
-              </div>
-            </div>
-          </div>
-        </div>
-      </div>
-    {% endfor %}
-  </div>
-  <div class="offcanvas-footer">
-    <div class="d-flex justify-content-around mb-2 mt-2">
-      <h5>Total</h5>
-      <h5 class="text-muted">$ 20.000</h5>
-    </div>
-    <div class="d-flex justify-content-around mb-4">
-      <a class="btn btn-dark" href="{% url 'mostrar_carrito' %}">Ver Carrito</a>
-      <a class="btn btn-dark" href="./pago/pago.html">Realizar Pedido</a>
-    </div>
-  </div>
-</div>

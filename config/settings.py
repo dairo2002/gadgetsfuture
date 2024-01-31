@@ -40,6 +40,7 @@ INSTALLED_APPS = [
     "django.contrib.staticfiles",
     "tienda",
     "carrito",
+    "cuenta",
 ]
 
 MIDDLEWARE = [
@@ -50,6 +51,8 @@ MIDDLEWARE = [
     "django.contrib.auth.middleware.AuthenticationMiddleware",
     "django.contrib.messages.middleware.MessageMiddleware",
     "django.middleware.clickjacking.XFrameOptionsMiddleware",
+    # Configuración del idioma en tu aplicación web.
+    "django.middleware.locale.LocaleMiddleware",
 ]
 
 ROOT_URLCONF = "config.urls"
@@ -67,8 +70,9 @@ TEMPLATES = [
                 "django.template.context_processors.request",
                 "django.contrib.auth.context_processors.auth",
                 "django.contrib.messages.context_processors.messages",
-                "tienda.context_processors.enlaces_categorias",                                
-                # "carrito.context_processors.mostrar_carrito",
+                "tienda.context_processors.enlaces_categorias",
+                # "carrito.context_processors._carrito_sesion",
+                "carrito.context_processors.mostrar_carrito",
                 "carrito.context_processors.contar_productos",
             ],
         },
@@ -78,10 +82,11 @@ TEMPLATES = [
 WSGI_APPLICATION = "config.wsgi.application"
 
 
-# Database
-# https://docs.djangoproject.com/en/5.0/ref/settings/#databases
+# Especifica el modelo de usuario personalizado, app = cuenta, clase = Cuenta
+AUTH_USER_MODEL = "cuenta.Cuenta"
 
-# Conexion a MySQL
+
+# Conexion MySQL:  https://docs.djangoproject.com/en/5.0/ref/settings/#databases
 DATABASES = {
     "default": {
         "ENGINE": "django.db.backends.mysql",
@@ -116,7 +121,7 @@ AUTH_PASSWORD_VALIDATORS = [
 # Internationalization
 # https://docs.djangoproject.com/en/5.0/topics/i18n/
 
-LANGUAGE_CODE = "en-us"
+LANGUAGE_CODE = "es"  # español
 
 TIME_ZONE = "UTC"
 
