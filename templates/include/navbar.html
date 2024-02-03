@@ -47,11 +47,18 @@
       </form>
       <div class="d-flex">
         <div class="me-4">
-          <small class="title text-muted">Bienvenido <strong>hola</strong></small>
-          <div>
-            <a href="" class="text-decoration-none text-dark">Iniciar Sesión</a> <span class="">|</span>
-            <a href="" class="text-decoration-none text-dark">Registrarse</a>
-          </div>
+          {% if user.id is None %}
+            <small class="title text-muted">Bienvenido</small>
+            <div>
+              <a href="{% url 'inicio_sesion' %}" class="text-decoration-none text-dark">Iniciar Sesión</a> <span>|</span>
+              <a href="{% url 'registrarse' %}" class="text-decoration-none text-dark">Registrarse</a>
+            </div>
+          {% else %}
+            <small class="title text-muted">Bienvenido <strong>{{ user.nombre}}</strong></small>
+            <div>
+              <a href="{% url 'cerrar_sesion' %}" class="text-decoration-none text-dark">Cerrar Sesión</a>
+            </div>
+          {% endif %}
         </div>
 
         <button class="btn btn-outline-dark d-flex flex-column align-items-center p-0" style="width: 52px; height: 52px; border-radius: 50%;" type="button" data-bs-toggle="offcanvas" data-bs-target="#offcanvasExample" aria-controls="offcanvasExample">
@@ -63,5 +70,4 @@
   </div>
 </nav>
 
-{% include "tienda/canvasCarrito.html" %}
-
+{% include 'tienda/canvasCarrito.html' %}

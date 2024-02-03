@@ -1,3 +1,156 @@
-from django.shortcuts import render
+from django.shortcuts import render, redirect
+from .forms import RegistroForms
+from .models import Cuenta
+from django.contrib import auth, messages
+from django.contrib.auth.decorators import login_required
 
-# Create your views here.
+# importaciones email
+from django.contrib.sites.shortcuts import get_current_site
+from django.template.loader import render_to_string
+from django.utils.http import urlsafe_base64_encode, urlsafe_base64_decode
+from django.utils.encoding import force_bytes
+from django.contrib.auth.tokens import default_token_generator
+from django.core.mail import EmailMessage
+
+
+def registrarse(request):
+    if request.method == "POST":
+        # Crea una instancia de RegistroForms con los datos del formulario que el usuario ha enviado a través de una solicitud POST.
+        formulario = RegistroForms(request.POST)
+        # print(f"Datos: {formulario}")
+        if formulario.is_valid():
+            nombre = formulario.cleaned_data["nombre"]
+            apellido = formulario.cleaned_data["apellido"]
+            correo_electronico = formulario.cleaned_data["correo_electronico"]
+            telefono = formulario.cleaned_data["telefono"]
+            password = formulario.cleaned_data["password"]
+            # Confirmar contraseña no alamacena, se validad si coniciden. (validacion forms.py)
+
+            # Toma la dirección de correo electrónico y extrae el como nombre de usuario lo que antes símbolo "@", con esto tambien evitamos repetidos
+            usuario = correo_electronico.split("@")[0]
+
+            # metodo create_user creado en ManejadorCuenta
+            crear_usuario = Cuenta.objects.create_user(
+                nombre=nombre,
+                apellido=apellido,
+                correo_electronico=correo_electronico,
+                username=usuario,
+                password=password,
+            )
+
+            # El campo de telefono es guardado de esta forma porque es un campo obligatorio
+            crear_usuario.telefono = telefono
+            crear_usuario.save()  # Se guarda este usuario en la db
+
+            messages.success(request, "Registro exito!")
+            return redirect("index")
+    else:
+        # obtener los campos de formulario vacios
+        formulario = RegistroForms()
+    return render(request, "cuenta/registrarse.html", {"form": formulario})
+
+
+def inicio_sesion(request):
+    # Verifica si la solicitud al servidor es de tipo POST
+    if request.method == "POST":
+        # Obtener los datos del formulario
+        correo_electronico = request.POST["correo_electronico"]
+        password = request.POST["password"]
+
+        #  authenticate: Toma el correo electrónico y la contraseña ingresada, busca un usuario que coincida en la base de datos
+        usuario = auth.authenticate(
+            correo_electronico=correo_electronico, password=password
+        )
+
+        # Verifica si el usuario no es nulo
+        if usuario is not None:
+            # Establece la sesion al usuario
+            auth.login(request, usuario)
+            # return redirect("index")
+            messages.success(request, f"Bienvenido {usuario.nombre} {usuario.apellido}")
+            return redirect("index")
+        else:
+            messages.error(request, "Las credenciales son incorrectas")
+            return redirect("inicio_sesion")
+    return render(request, "cuenta/inicio_sesion.html")
+
+
+@login_required(login_url="inicio_sesion")
+def cerrar_sesion(request):
+    auth.logout(request)
+    messages.success(request, "Has cerrado sesión exitosamente.")
+    return redirect("inicio_sesion")
+
+
+def recuperar_password(request):
+    if request.method == "POST":
+        correo_electronico = request.POST["correo_electronico"]
+        # Hacemos un filtro a la base de datos validando si el correo existe
+        if Cuenta.objects.filter(correo_electronico=correo_electronico).exists():
+            # Obtener el objeto de usuario asociado al correo electrónico
+            usuario = Cuenta.objects.get(correo_electronico__exact=correo_electronico)
+
+            # Obtener el dominio actual
+            current_site = get_current_site(request)
+            # Configurar el asunto del correo electrónico
+            mail_subject = "Recuperar contraseña"
+            # Renderizar el mensaje del correo electrónico
+            mensaje = render_to_string(
+                "cuenta/mensaje_cambiar_pwd.html",
+                {
+                    "usuario": usuario,
+                    "dominio": current_site,
+                    "uid": urlsafe_base64_encode(force_bytes(usuario.id)),
+                    "token": default_token_generator.make_token(usuario),
+                },
+            )
+
+            # Configurar y enviar el correo electrónico
+            to_email = correo_electronico
+            send_email = EmailMessage(mail_subject, mensaje, to=[to_email])
+            send_email.send()
+
+            messages.success(
+                request,
+                "Se ha enviado un correo electrónico de restablecimiento de contraseña a su dirección de correo electrónico",
+            )
+            return redirect("inicio_sesion")
+        else:
+            messages.error(request, "La cuenta no existe!")
+            return redirect("recuperar_password")
+    return render(request, "cuenta/recuperar_password.html")
+
+
+def enlace_cambiar_pwd(request, uidb64, token):
+    try:
+        uid = urlsafe_base64_decode(uidb64).decode()
+        user = Cuenta._default_manager.get(id=uid)
+    except (TypeError, ValueError, OverflowError, Cuenta.DoesNotExist):
+        user = None
+
+    if user is not None and default_token_generator.check_token(user, token):
+        request.session["uid"] = uid
+        messages.success(request, "Por favor restablecer la contraseña")
+        return redirect("enlace_recuperar_pwd")
+    else:
+        messages.success(request, "Este enlace ha caducado!")
+        return redirect("inicio_sesion")
+
+
+def restablecer_password(request):
+    if request.method == "POST":
+        new_password = request.POST["nueva_password"]
+        confirm_password = request.POST["confirmar_password"]
+
+        if new_password == confirm_password:
+            uid = request.session.get("uid")
+            user = Cuenta.objects.get(id=uid)
+            user.set_password(new_password)
+            user.save()
+            messages.success(request, "")
+            return redirect("inicio_sesion")
+        else:
+            messages.error(request, "Las contraseñas no coniciden")
+            return redirect("restablecer_password")
+    else:
+        return render(request, "cuenta/restablecer_password.html")

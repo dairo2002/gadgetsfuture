@@ -1,0 +1,68 @@
+{% extends 'base.html' %}
+{% block content %}
+  <!-- Mensajes de inicio sesión -->
+  <div>
+    <div class="mx-auto w-50 mt-3">
+      {% include 'include/alertas.html' %}
+    </div>
+
+    <div class="card border-dark border-opacity-50 col-12 col-sm-10 col-md-8 col-lg-5 rounded-4 text-dark mx-auto my-3">
+      <h2 class="text-center mt-3">Registrarse</h2>
+      <form action="{% url 'registrarse' %}" method="POST" class="row g-3 p-3">
+        {% csrf_token %}
+        <div class="col-6">
+          <label class="form-label mx-1 mb-1">Nombre</label>
+          {% comment %} <input type="text" name="nombre" class="form-control border-dark border-opacity-50" required /> {% endcomment %}
+          {{ form.nombre }}
+        </div>
+        <div class="col-6">
+          <label class="form-label mx-1 mb-1">Apellido</label>
+          {% comment %} <input type="text" name="apellido" class="form-control border-dark border-opacity-50" required /> {% endcomment %}
+          {{ form.apellido }}
+        </div>
+        <div class="col-6">
+          <label class="form-label mx-1 mb-1">Correo electrónico</label>
+          {% comment %} <input type="email" name="correo_electronico" class="form-control border-dark border-opacity-50" required /> {% endcomment %}
+          {{ form.correo_electronico }}
+        </div>
+        <div class="col-6">
+          <label class="form-label mx-1 mb-1">Teléfono</label>
+          {% comment %} <input type="text" name="telefono" class="form-control border-dark border-opacity-50" /> {% endcomment %}
+          {{ form.telefono }}
+        </div>
+        <div class="col-6">
+          <label class="form-label mx-1 mb-1">Contraseña</label>
+          {% comment %} <input type="password" name="password" class="form-control border-dark border-opacity-50" required /> {% endcomment %}
+          {{ form.password }}
+        </div>
+        <div class="col-6">
+          <label class="form-label mx-1 mb-1">Confirmar contraseña</label>
+          {% comment %} <input type="password" name="confirmar_password" class="form-control border-dark border-opacity-50" required /> {% endcomment %}
+          {{ form.confirmar_password }}
+        </div>
+
+        <div>
+          {% for field in form %}
+            {% if field.errors %}
+              <ul>
+                {% for error in field.errors %}
+                  <li>{{ error }}</li>
+                {% endfor %}
+              </ul>
+            {% endif %}
+          {% endfor %}
+        </div>
+
+        <div class="my-4 d-flex justify-content-center">
+          <button class="btn btn-secondary col-6 rounded-pill fw-semibold fs-5" type="submit">Registrarse</button>
+        </div>
+        <div class="text-center">
+          <p>
+            ¿Ya tienes una cuenta?
+            <a href="{% url 'inicio_sesion' %}" class="link-secondary text-decoration-none link-opacity-100-hover fw-semibold">Iniciar sesión</a>
+          </p>
+        </div>
+      </form>
+    </div>
+  </div>
+{% endblock %}

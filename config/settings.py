@@ -90,7 +90,7 @@ AUTH_USER_MODEL = "cuenta.Cuenta"
 DATABASES = {
     "default": {
         "ENGINE": "django.db.backends.mysql",
-        "NAME": "tienda",
+        "NAME": "gadgets",
         "USER": "root",
         "PASSWORD": "",
         "HOST": "localhost",
@@ -140,6 +140,16 @@ STATICFILES_DIRS = ["static/"]
 # archivo de imagenes de los productos
 MEDIA_URL = "media/"
 MEDIA_ROOT = os.path.join(BASE_DIR, "media")
+
+
+# Hacer uso de los mensajes django
+from django.contrib.messages import constants as messages
+
+# Configuramos por defecto, estos mensajes son utilizados en las alertas.html
+MESSAGE_TAGS = {
+    messages.ERROR: "danger",    
+}
+
 
 # Default primary key field type
 # https://docs.djangoproject.com/en/5.0/ref/settings/#default-auto-field
