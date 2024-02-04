@@ -1,9 +1,6 @@
 {% extends 'base.html' %}
 {% block content %}
   <div>
-    <div class="mx-auto w-50 mt-3">
-      {% include 'include/alertas.html' %}
-    </div>
     <div class="card border-dark border-opacity-50 col-12 col-sm-10 col-md-8 col-lg-5 rounded-4 text-dark mx-auto my-3">
       <h2 class="text-center mt-4">Iniciar Sesión</h2>
       <form action="{% url 'inicio_sesion' %}" method="POST" class="row g-3 m-2 p-2 d-flex justify-content-center">

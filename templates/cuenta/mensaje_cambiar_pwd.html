@@ -1,11 +1,10 @@
 {% autoescape off %}
 
-Hola {{usuario.nombre}}
 Hola {{usuario.usuario_nombre_completo}}
 
 
 Por favor, haga click en el enlace para recuperar la contraseña
-http://{{dominio}}{% url 'enlace_cambiar_pwd' uidb=uid token=token%}
+http://{{dominio}}{% url 'enlace_cambiar_pwd' uidb64=uid token=token%}
 
 
 Si crees que no eres tú, ignora este correo electrónico

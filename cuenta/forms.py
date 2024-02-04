@@ -1,4 +1,5 @@
 import re
+from typing import Any
 from django import forms
 from .models import Cuenta
 
@@ -12,21 +13,23 @@ from django.core.validators import validate_email
 class RegistroForms(forms.ModelForm):
     # Se crean estos campos que no estan en el modelo
     password = forms.CharField(
-        widget=forms.PasswordInput(attrs={"placeholder": "Ingresar contraseña"})
+        label="Contraseña",
+        widget=forms.PasswordInput(attrs={"placeholder": "Ingresar contraseña"}),
     )
 
     confirmar_password = forms.CharField(
-        widget=forms.PasswordInput(attrs={"placeholder": "Confirmar contraseña"})
+        label="Confirmar contraseña",
+        widget=forms.PasswordInput(attrs={"placeholder": "Confirmar contraseña"}),
     )
 
     class Meta:
         model = Cuenta
         # Traemos los campos del modelo de cuenta, que son aplicados al formulario,
-        # Solo es necesario guardar un campo de contraseña y se validan si concide para ser guardada
-        fields = ["nombre", "apellido", "telefono", "correo_electronico", "password"]
+        fields = ["nombre", "apellido", "correo_electronico", "telefono", "password"]
 
+    # ! Corregir buscar como utilizar el clean y como crear las funciones, para que manejen los errores
     # Funcion clean() validar campos
-    def clean(self):
+    def clean_password(self):  # funciona con el clean() solo
         cleaned_data = super(RegistroForms, self).clean()
 
         # Obtener los campos de contraseña y confirmar contraseña
@@ -38,6 +41,8 @@ class RegistroForms(forms.ModelForm):
         # Validamos si las dos contraseñas conciden
         if password != confirmar_password:
             raise forms.ValidationError("Las contraseñas no coinciden")
+
+        return password
 
         """ 
         # ! Corregir solo valida la primer validacion que hay en la funcion 
@@ -111,4 +116,6 @@ class RegistroForms(forms.ModelForm):
 
         # Se itera para que cada campo tenga la misma clase
         for field in self.fields:
-            self.fields[field].widget.attrs["class"] = "form-control border-1 border-secondary"
+            self.fields[field].widget.attrs[
+                "class"
+            ] = "form-control border-1 border-secondary"

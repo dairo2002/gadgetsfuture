@@ -7,6 +7,6 @@ urlpatterns = [
     path("cerrar_sesion/", views.cerrar_sesion, name="cerrar_sesion"),
 
     path("recuperar_password/", views.recuperar_password, name="recuperar_password"),
-    path("cambiar_password/<uidb64>/<token>", views.enlace_cambiar_pwd, name="enlace_cambiar_pwd"),
+    path("cambiar_password/<uidb64>/<token>/", views.enlace_cambiar_pwd, name="enlace_cambiar_pwd"),
     path("restablecer_password/", views.restablecer_password, name="restablecer_password"),
 ]

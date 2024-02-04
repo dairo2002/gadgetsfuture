@@ -42,7 +42,7 @@ def registrarse(request):
             crear_usuario.telefono = telefono
             crear_usuario.save()  # Se guarda este usuario en la db
 
-            messages.success(request, "Registro exito!")
+            messages.success(request, f"Registro exito {crear_usuario.nombre} {crear_usuario.apellido}")
             return redirect("index")
     else:
         # obtener los campos de formulario vacios
@@ -100,7 +100,7 @@ def recuperar_password(request):
                 {
                     "usuario": usuario,
                     "dominio": current_site,
-                    "uid": urlsafe_base64_encode(force_bytes(usuario.id)),
+                    "uid": urlsafe_base64_encode(force_bytes(usuario.pk)),
                     "token": default_token_generator.make_token(usuario),
                 },
             )
@@ -131,7 +131,7 @@ def enlace_cambiar_pwd(request, uidb64, token):
     if user is not None and default_token_generator.check_token(user, token):
         request.session["uid"] = uid
         messages.success(request, "Por favor restablecer la contraseña")
-        return redirect("enlace_recuperar_pwd")
+        return redirect("restablecer_password")
     else:
         messages.success(request, "Este enlace ha caducado!")
         return redirect("inicio_sesion")

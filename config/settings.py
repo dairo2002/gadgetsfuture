@@ -147,8 +147,16 @@ from django.contrib.messages import constants as messages
 
 # Configuramos por defecto, estos mensajes son utilizados en las alertas.html
 MESSAGE_TAGS = {
-    messages.ERROR: "danger",    
+    messages.ERROR: "danger",
 }
+
+# ? CONFIGURACION SOLUCITUDES DE EMAIL
+EMAIL_HOST = "smtp.gmail.com"
+EMAIL_PORT = 587
+# Cuenta gmail del proyecto
+EMAIL_HOST_USER = "gadgetsfuture09@gmail.com"
+EMAIL_HOST_PASSWORD = "ifvb svpc ipjk fric"
+EMAIL_USE_TLS = True
 
 
 # Default primary key field type
