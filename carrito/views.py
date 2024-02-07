@@ -3,8 +3,6 @@ from tienda.models import Producto
 from .models import CarritoSesion, Carrito
 from django.urls import resolve
 
-# from carrito.context_processors import _carrito_sesion
-
 
 def _carrito_sesion(request):
     # Obtener la clave de sesión actual del usuario
@@ -18,27 +16,46 @@ def _carrito_sesion(request):
 
 
 def add_carrito(request, producto_id):
-    productos = get_object_or_404(Producto, pk=producto_id)
-    try:
-        carrito_sesion = CarritoSesion.objects.get(
-            carrito_session=_carrito_sesion(request)
-        )
-    except CarritoSesion.DoesNotExist:
-        carrito_sesion = CarritoSesion.objects.create(
-            carrito_session=_carrito_sesion(request)
-        )
-    carrito_sesion.save()
+    usuario_actual = request.user
+    productos = Producto.objects.get(pk=producto_id)
 
-    try:
-        carrito = Carrito.objects.get(carritoSesion=carrito_sesion, producto=productos)
-        carrito.cantidad += 1
-        carrito.save()
-    except Carrito.DoesNotExist:
-        carrito = Carrito.objects.create(
-            producto=productos, cantidad=1, carritoSesion=carrito_sesion
-        )
-        carrito.save()
+    # Obtener los productos productos cuando el usuario sea autenticado
+    if usuario_actual.is_authenticated:
+        try:
+            carrito = Carrito.objects.get(usuario=usuario_actual, producto=productos)
+            carrito.cantidad += 1
+            carrito.save()
+        except Carrito.DoesNotExist:
+            carrito = Carrito.objects.create(
+                producto=productos,
+                cantidad=1,
+                usuario=usuario_actual,
+            )
+            carrito.save()        
+        return redirect("mostrar_carrito")
 
+    else:
+        try:
+            carrito_sesion = CarritoSesion.objects.get(
+                carrito_session=_carrito_sesion(request)
+            )
+        except CarritoSesion.DoesNotExist:
+            carrito_sesion = CarritoSesion.objects.create(
+                carrito_session=_carrito_sesion(request)
+            )
+        carrito_sesion.save()
+
+        try:
+            carrito = Carrito.objects.get(
+                carritoSesion=carrito_sesion, producto=productos
+            )
+            carrito.cantidad += 1
+            carrito.save()
+        except Carrito.DoesNotExist:
+            carrito = Carrito.objects.create(
+                producto=productos, cantidad=1, carritoSesion=carrito_sesion
+            )
+            carrito.save()    
     return redirect("mostrar_carrito")
 
 
@@ -48,26 +65,44 @@ def mostrar_carrito(request):
 
 
 # Eliminar un producto por la cantidad
-def delete_cantidad_carrito(request, producto_id):
-    carrito_sesion = CarritoSesion.objects.get(carrito_session=_carrito_sesion(request))
+def delete_cantidad_carrito(request, producto_id, carrito_id):
     producto = get_object_or_404(Producto, pk=producto_id)
-
-    carrito = Carrito.objects.get(producto=producto, carritoSesion=carrito_sesion)
-    #  Actualización de la cantidad del carrito
-    if carrito.cantidad > 1:
-        # Si la cantidad es mayor que 1, se disminuye en 1 y se guarda
-        carrito.cantidad -= 1
-        carrito.save()
-    else:
-        # Eliminación del producto del carrito si la cantidad es 1 o menos
-        carrito.delete()
+    try:
+        if request.user.is_authenticated:
+            carrito = Carrito.objects.get(
+                producto=producto, usuario=request.user, id=carrito_id
+            )
+        else:
+            carrito_sesion = CarritoSesion.objects.get(carrito_session=_carrito_sesion(request))
+            carrito = Carrito.objects.get(
+                producto=producto, carritoSesion=carrito_sesion, id=carrito_id
+            )
+        #  Actualización de la cantidad del carrito
+        if carrito.cantidad > 1:
+            # Si la cantidad es mayor que 1, se disminuye en 1 y se guarda
+            carrito.cantidad -= 1
+            carrito.save()
+        else:
+            # Eliminación del producto del carrito si la cantidad es 1 o menos
+            carrito.delete()
+    except:
+        pass
     return redirect("mostrar_carrito")
 
 
-def delete_producto_carrito(request, producto_id):
-    carrito_sesion = CarritoSesion.objects.get(carrito_session=_carrito_sesion(request))
+def delete_producto_carrito(request, producto_id, carrito_id):
     producto = get_object_or_404(Producto, pk=producto_id)
 
-    carrito = Carrito.objects.get(producto=producto, carritoSesion=carrito_sesion)
+    if request.user.is_authenticated:
+        carrito = Carrito.objects.get(
+            producto=producto, usuario=request.user, id=carrito_id
+        )
+    else:
+        carrito_sesion = CarritoSesion.objects.get(
+            carrito_session=_carrito_sesion(request)
+        )
+        carrito = Carrito.objects.get(
+            producto=producto, carritoSesion=carrito_sesion, id=carrito_id
+        )
     carrito.delete()
     return redirect("mostrar_carrito")

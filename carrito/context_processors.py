@@ -6,10 +6,15 @@ from django.core.exceptions import ObjectDoesNotExist
 # Muestra los productos que hay en el carrito de compras, utilizado en carrito.html y navbar.html
 def mostrar_carrito(request, total=0, cantidad=0, carrito=None):
     try:
-        carrito_sesion = CarritoSesion.objects.get(
-            carrito_session=_carrito_sesion(request)
-        )
-        carrito = Carrito.objects.filter(carritoSesion=carrito_sesion, activo=True)
+        if request.user.is_authenticated:
+            carrito = Carrito.objects.filter(
+                usuario=request.user, activo=True
+            )
+        else:
+            carrito_sesion = CarritoSesion.objects.get(
+                carrito_session=_carrito_sesion(request)
+            )
+            carrito = Carrito.objects.filter(carritoSesion=carrito_sesion, activo=True)
         for articulo in carrito:
             total += articulo.producto.precio * articulo.cantidad
             cantidad += articulo.cantidad
@@ -30,9 +35,13 @@ def contar_productos(request):
             carrito_sesion = CarritoSesion.objects.filter(
                 carrito_session=_carrito_sesion(request)
             )
-            carrito_articulos = Carrito.objects.all().filter(
-                carritoSesion=carrito_sesion[:1]
-            )
+            if request.user.is_authenticated:
+                carrito_articulos = Carrito.objects.all().filter(usuario=request.user)
+            else:
+                carrito_articulos = Carrito.objects.all().filter(
+                    carritoSesion=carrito_sesion[:1]
+                )
+
             for articulo in carrito_articulos:
                 contar += articulo.activo
         except Carrito.DoesNotExist:

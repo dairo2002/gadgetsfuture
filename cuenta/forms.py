@@ -17,7 +17,7 @@ class RegistroForms(forms.ModelForm):
         widget=forms.PasswordInput(attrs={"placeholder": "Ingresar contraseña"}),
     )
 
-    confirmar_password = forms.CharField(
+    confirm_pwd = forms.CharField(
         label="Confirmar contraseña",
         widget=forms.PasswordInput(attrs={"placeholder": "Confirmar contraseña"}),
     )
@@ -27,20 +27,21 @@ class RegistroForms(forms.ModelForm):
         # Traemos los campos del modelo de cuenta, que son aplicados al formulario,
         fields = ["nombre", "apellido", "correo_electronico", "telefono", "password"]
 
-    # ! Corregir buscar como utilizar el clean y como crear las funciones, para que manejen los errores
     # Funcion clean() validar campos
-    def clean_password(self):  # funciona con el clean() solo
+    def clean_confirm_pwd(
+        self,
+    ):  # funciona con el clean() solo, pero no mestra los errores, clena_password() confirm_pwd=None
         cleaned_data = super(RegistroForms, self).clean()
 
-        # Obtener los campos de contraseña y confirmar contraseña
         password = cleaned_data.get("password")
-        confirmar_password = cleaned_data.get("confirmar_password")
+        confirmar_password = cleaned_data.get("confirm_pwd")
 
         print(f"Registro: password {password} confirmar_password: {confirmar_password}")
 
         # Validamos si las dos contraseñas conciden
         if password != confirmar_password:
             raise forms.ValidationError("Las contraseñas no coinciden")
+            # raise self.add_error('Las contraseñas no coinciden')
 
         return password
 
@@ -118,4 +119,14 @@ class RegistroForms(forms.ModelForm):
         for field in self.fields:
             self.fields[field].widget.attrs[
                 "class"
-            ] = "form-control border-1 border-secondary"
+            ] = "form-control"
+
+"""
+!HACER VALIDACIONES
+
+- NOMBRE & APELLIDO: mas de 3 palabras
+
+- EMAIL: 
+-Permitir solo minusculas
+- Validacion que termine en @gmail.com
+"""

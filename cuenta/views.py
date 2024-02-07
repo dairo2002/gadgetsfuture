@@ -12,6 +12,9 @@ from django.utils.encoding import force_bytes
 from django.contrib.auth.tokens import default_token_generator
 from django.core.mail import EmailMessage
 
+from carrito.views import _carrito_sesion
+from carrito.models import Carrito, CarritoSesion
+
 
 def registrarse(request):
     if request.method == "POST":
@@ -42,7 +45,10 @@ def registrarse(request):
             crear_usuario.telefono = telefono
             crear_usuario.save()  # Se guarda este usuario en la db
 
-            messages.success(request, f"Registro exito {crear_usuario.nombre} {crear_usuario.apellido}")
+            messages.success(
+                request,
+                f"Registro exito {crear_usuario.nombre} {crear_usuario.apellido}",
+            )
             return redirect("index")
     else:
         # obtener los campos de formulario vacios
@@ -58,16 +64,33 @@ def inicio_sesion(request):
         password = request.POST["password"]
 
         #  authenticate: Toma el correo electrónico y la contraseña ingresada, busca un usuario que coincida en la base de datos
-        usuario = auth.authenticate(
+        usuarios = auth.authenticate(
             correo_electronico=correo_electronico, password=password
         )
 
         # Verifica si el usuario no es nulo
-        if usuario is not None:
+        if usuarios is not None:
+            # Verificar si hay un carrito existente y asociarlo al usuario
+            try:
+                carrito_sesion = CarritoSesion.objects.get(
+                    carrito_session=_carrito_sesion(request)
+                )
+                carrito_existe = Carrito.objects.filter(
+                    carritoSesion=carrito_sesion
+                ).exists()
+                if carrito_existe:
+                    carrito = Carrito.objects.filter(carritoSesion=carrito_sesion)
+                    for articulo in carrito:
+                        articulo.usuario = usuarios
+                        articulo.save()
+            except Exception as e:
+                print(f'Error: ',{e})
             # Establece la sesion al usuario
-            auth.login(request, usuario)
+            auth.login(request, usuarios)
             # return redirect("index")
-            messages.success(request, f"Bienvenido {usuario.nombre} {usuario.apellido}")
+            messages.success(
+                request, f"Bienvenido {usuarios.nombre} {usuarios.apellido}"
+            )
             return redirect("index")
         else:
             messages.error(request, "Las credenciales son incorrectas")
@@ -121,6 +144,7 @@ def recuperar_password(request):
     return render(request, "cuenta/recuperar_password.html")
 
 
+# Datos obtenidos para ruta del email
 def enlace_cambiar_pwd(request, uidb64, token):
     try:
         uid = urlsafe_base64_decode(uidb64).decode()

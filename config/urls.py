@@ -32,6 +32,8 @@ urlpatterns = [
     path("carrito/", include("carrito.urls")),
     
     path("cuenta/", include("cuenta.urls")),
+
+    path("pedido/", include("pedido.urls")),
     
 
 

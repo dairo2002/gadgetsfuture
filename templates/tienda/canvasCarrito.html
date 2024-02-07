@@ -1,46 +1,61 @@
 <!-- canva carrito de compras -->
 <div class="offcanvas offcanvas-end" tabindex="-1" id="offcanvasExample" aria-labelledby="offcanvasExampleLabel">
   <div class="offcanvas-header">
-    <h5 class="offcanvas-title fw-semibold" id="offcanvasExampleLabel">Carrito de compras</h5>
+    <h5 class="offcanvas-title fs-4 fw-semibold" id="offcanvasExampleLabel">Carrito de compras</h5>
     <button type="button" class="btn-close" data-bs-dismiss="offcanvas" aria-label="Close"></button>
   </div>
-  <div class="offcanvas-body">
-    {% for articulo in articulo_carrito %}
-      <div class="card mb-3 border-2 border-secondary-subtle">
-        <div class="row g-0">
-          <div class="col-md-4 my-auto">
-            <img src="{{ articulo.producto.imagen.url }}" alt="imagen producto carrito" class="img-fluid rounded-3 mx-2" />
-          </div>
-          <div class="col-md-8">
+  {% if not articulo_carrito %}
+    <hr />
+    <h2 class="text-muted text-center">El carrito de compras esta vacío</h2>
+    <br />
+    <div class="text-center">
+      <a href="{% url 'tienda' %}" class="btn btn-dark">Continuar comprando <i class="fa-solid fa-store"></i></a>
+    </div>
+  {% else %}
+    <div class="offcanvas-body">
+      {% for articulo in articulo_carrito %}
+        <div class="card mb-3 border-2 border-secondary-subtle">
+          <div class="row g-0">
+            <img src="{{ articulo.producto.imagen.url }}" alt="imagen producto carrito" class="img-fluid rounded-3 mx-auto mt-2 w-50" />
             <div class="card-body">
               <div class="d-flex justify-content-between align-items-center">
-                <h6 class="card-title">{{ articulo.producto.nombre }}</h6>
-                <a href="{% url 'eliminar_producto_carrito' articulo.producto.id %}" class="btn btn-sm mb-2 btn-outline-danger"><i class="fa-solid fa-trash fa-xl"></i></a>
+                <h6 class="card-title fs-5">{{ articulo.producto.nombre }}</h6>
+                <a href="{% url 'eliminar_producto_carrito' articulo.producto.id articulo.id %}" class="btn btn-sm mb-2 btn-outline-danger"><i class="fa-solid fa-trash fa-xl"></i></a>
               </div>
-              <p class="text-muted m-0">$ {{ articulo.producto.precio }}</p>
 
-              <div class="d-flex align-items-center mt-2">
-                <p class="text-muted mb-0 me-2">cantidad</p>
-                <input type="number" min="0" value="{{ articulo.cantidad }}" class="form-control form-control-sm border-2 border-secondary-subtle w-50" />
+              <div class="d-flex justify-content-between">
+                <div class="">
+                  <p class="mb-0">${{ articulo.sub_total }}</p>
+                  <small><p class="text-muted ">${{ articulo.producto.precio }}</p></small>
+                </div>
+                <div class="mt-2 w-50">
+                  {% comment %} <p class="text-muted mb-0 me-2">cantidad</p> {% endcomment %}
+                  {% comment %} <input type="number" min="0" value="{{ articulo.cantidad }}" class="form-control form-control-sm border-2 border-secondary-subtle w-50" /> {% endcomment %}
+                  <div class="input-group">
+                    <a href="{% url 'eliminar_cantidad' articulo.producto.id articulo.id %}" class="btn btn-primary"><i class="fa-solid fa-minus fa-lg"></i></a>
+                    <input type="number" value="{{ articulo.cantidad }}" class="form-control form-control-sm" />
+                    <a href="{% url 'add_carrito' articulo.producto.id %}" class="btn btn-primary"><i class="fa-solid fa-plus fa-lg"></i></a>
+                  </div>
+                </div>
               </div>
             </div>
           </div>
         </div>
+      {% endfor %}
+    </div>
+    <div class="offcanvas-footer p-3">
+      <div class="d-flex justify-content-between mt-2">
+        <h5>Articulos</h5>
+        <h5 class="text-muted">{{ contar_productos }}</h5>
       </div>
-    {% endfor %}
-  </div>
-  <div class="offcanvas-footer">
-    <div class="d-flex justify-content-around mb-2 mt-2">
-      <h5>Articulos</h5>
-      <h5 class="text-muted">{{ contar_productos }}</h5>
+      <div class="d-flex justify-content-between">
+        <h5>Total</h5>
+        <h5 class="text-muted">$ {{ total }}</h5>
+      </div>
+      <div class="d-flex justify-content-between my-3">
+        <a class="btn btn-dark" href="{% url 'mostrar_carrito' %}">Ver Carrito</a>
+        <a class="btn btn-dark" href="{% url 'realizar_pedido' %}">Realizar Pedido</a>
+      </div>
     </div>
-    <div class="d-flex justify-content-around mb-2 mt-2">
-      <h5>Total</h5>
-      <h5 class="text-muted">$ {{ total }}</h5>
-    </div>
-    <div class="d-flex justify-content-around mb-4">
-      <a class="btn btn-dark" href="{% url 'mostrar_carrito' %}">Ver Carrito</a>
-      <a class="btn btn-dark" href="./pago/pago.html">Realizar Pedido</a>
-    </div>
-  </div>
+  {% endif %}
 </div>

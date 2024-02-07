@@ -11,6 +11,7 @@ class CarritoSesionAdmin(admin.ModelAdmin):
 
 class CarritoAdmin(admin.ModelAdmin):
     list_display = (
+        "usuario",
         "carritoSesion",
         "producto",
         "cantidad",
