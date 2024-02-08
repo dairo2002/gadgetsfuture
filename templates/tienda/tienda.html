@@ -49,7 +49,7 @@
                 {% endfor %}
                 <!-- Si no exite -->
               {% else %}
-                <h3>No se encontraron productos relacionado con la palabra<Strong>{{ txtBuscar }}</Strong></h3>
+                <h3>No se encontraron productos relacionado con la palabra<Strong> {{ txtBuscar }}</Strong></h3>
               {% endif %}
             </div>
           </div>
@@ -61,8 +61,8 @@
                 <!-- pagina anterior has_previous -->
                 {% if producto.has_previous %}
                   <li class="page-item">
-                    <!--                          número de la página anterior 
-                        - pagina, en la vista es llamado por el get                         -->
+                    <!--                           número de la página anterior 
+                        - pagina, en la vista es llamado por el get                          -->
                     <a class="page-link" href="?pagina={{ producto.previous_page_number }}">Anterior</a>
                   </li>
                 {% else %}
@@ -73,8 +73,8 @@
                 {% endif %}
 
                 {% for p in producto.paginator.page_range %}
-                  <!--                        Numeros de la paginacion 
-                Comprueba si el numero de la pagina es que corresponde                       -->
+                  <!--                         Numeros de la paginacion 
+                Comprueba si el numero de la pagina es que corresponde                        -->
                   {% if producto.number == p %}
                     <li class="page-item">
                       <a class="page-link" href="#">{{ p }}</a>

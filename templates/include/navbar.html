@@ -1,3 +1,4 @@
+{% load static %}
 <!-- Header -->
 <header class="bg-dark sticky-top">
   <div class="row">
@@ -17,8 +18,8 @@
 <!-- End header -->
 
 <nav class="navbar navbar-expand-lg bg-body-tertiary sticky-top">
-  <div class="container my-2">
-    <a class="navbar-brand" href="{% url 'index' %}">Logo</a>
+  <div class="container my-1">
+    <a class="navbar-brand" href="{% url 'index' %}"><img src="{% static 'img/logo.png' %}" alt="logo" width="180px" /></a>
     <button class="navbar-toggler btn" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation"><span class="navbar-toggler-icon"></span></button>
 
     <div class="collapse navbar-collapse" id="navbarSupportedContent">
@@ -41,22 +42,22 @@
       <!-- Formulario de busqueda -->
       <form action="{% url 'buscar_producto' %}" method="GET" class="mx-auto mb-2 mb-lg-0" role="search">
         <div class="input-group campoBuscar mx-2">
-          <input name="txtBusqueda" type="search" class="form-control" id="inputGroupFile04" aria-describedby="inputGroupFileAddon04" placeholder="¿Qué estás buscando?" />
+          <input name="txtBusqueda" type="search" class="form-control" id="inputGroupFile04" aria-describedby="inputGroupFileAddon04" placeholder="¿Qué estás buscando?" required/>
           <button class="btn btn-outline-secondary" type="submit" id="inputGroupFileAddon04">Buscar</button>
         </div>
       </form>
       <div class="d-flex">
         <div class="me-4">
-          {% if user.id is None %}
+          {% if user.is_authenticated %}
+            <small class="title text-muted">Bienvenido <strong>{{ user.nombre }}</strong></small>
+            <div>
+              <a href="{% url 'cerrar_sesion' %}" class="text-decoration-none text-dark">Cerrar Sesión</a>
+            </div>
+          {% else %}
             <small class="title text-muted">Bienvenido</small>
             <div>
               <a href="{% url 'inicio_sesion' %}" class="text-decoration-none text-dark">Iniciar Sesión</a> <span>|</span>
               <a href="{% url 'registrarse' %}" class="text-decoration-none text-dark">Registrarse</a>
-            </div>
-          {% else %}
-            <small class="title text-muted">Bienvenido <strong>{{ user.nombre}}</strong></small>
-            <div>
-              <a href="{% url 'cerrar_sesion' %}" class="text-decoration-none text-dark">Cerrar Sesión</a>
             </div>
           {% endif %}
         </div>
@@ -69,5 +70,4 @@
     </div>
   </div>
 </nav>
-
 {% include 'tienda/canvasCarrito.html' %}

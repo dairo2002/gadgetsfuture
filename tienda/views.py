@@ -2,6 +2,7 @@ from django.shortcuts import render, redirect, get_object_or_404
 from .models import Producto, Categoria
 from carrito.models import Carrito, CarritoSesion
 from carrito.context_processors import _carrito_sesion
+from django.contrib import messages
 
 from django.db.models import Q
 
@@ -58,14 +59,14 @@ def detalle_producto(request, categoria_slug, producto_slug):
     )
 
 
-
 def buscar_producto(request):
-    # Verificamos si la palabra clave ("txtBusqueda") está presente en los parámetros de la solicitud GET
+    palabra_busqueda = None
+    contar_productos = 0
     if "txtBusqueda" in request.GET:
         # Si está presente, obtenemos el valor de la palabra clave de la solicitud GET
         txtBusqueda = request.GET["txtBusqueda"]
 
-        #  # Verificamos si la palabra clave no está vacía
+        # Verificamos si la palabra clave no está vacía
         if txtBusqueda:
             # icontains a un campo de texto en una consulta, la base de datos realizará una búsqueda que ignorará la distinción entre mayúsculas y minúsculas.
             # Q en Django se utiliza para construir expresiones de consulta más complejas, especialmente cuando necesitas combinar condiciones con operadores

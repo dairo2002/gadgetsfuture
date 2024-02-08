@@ -4,17 +4,16 @@ body {
     font-family: 'Quicksand';
 }
 
-
 .campoBuscar {
     width: 450px;
 }
-
 
 /** Campo de busqueda, Formulario de registro, Formulario de inicio sesión, Formulario pedido ***/
 .input-group input:focus,
 .form_registrarse input:focus,
 .form_inicio_sesion input:focus,
-.form_pedido input:focus {
+.form_pedido input:focus,
+.form_pago input:focus {
     box-shadow: none;
     border-color: gray;
 }
@@ -23,3 +22,11 @@ body {
 .offcanvas-footer {
     background-color: #9eb8fa;
 }
+
+#tarjetaCredito,
+#efectivo,
+#transferencia {
+    cursor: pointer;
+    font-size: 18px;
+}
+

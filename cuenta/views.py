@@ -45,15 +45,23 @@ def registrarse(request):
             crear_usuario.telefono = telefono
             crear_usuario.save()  # Se guarda este usuario en la db
 
-            messages.success(
-                request,
-                f"Registro exito {crear_usuario.nombre} {crear_usuario.apellido}",
+            usuarios = auth.authenticate(
+                correo_electronico=correo_electronico, password=password
             )
+
+            if usuarios is not None:
+                auth.login(request, usuarios)
+                messages.success(
+                    request,
+                    f"Registro exito {usuarios.nombre} {usuarios.apellido}",
+                )
             return redirect("index")
+        else:
+            messages.error(request, "Error en el formulario de registro")
     else:
         # obtener los campos de formulario vacios
-        formulario = RegistroForms()
-    return render(request, "cuenta/registrarse.html", {"form": formulario})
+        formu = RegistroForms()
+    return render(request, "cuenta/registrarse.html", {"form": formu})
 
 
 def inicio_sesion(request):
@@ -84,7 +92,7 @@ def inicio_sesion(request):
                         articulo.usuario = usuarios
                         articulo.save()
             except Exception as e:
-                print(f'Error: ',{e})
+                print(f"Error: ", {e})
             # Establece la sesion al usuario
             auth.login(request, usuarios)
             # return redirect("index")

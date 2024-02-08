@@ -8,8 +8,9 @@ import datetime
 
 
 # ! TERMINAR
-# Validar si se esta enviando la informacion 
+# Validar si se esta enviando la informacion
 # Continuar con el proceso de pago
+
 
 @login_required(login_url="inicio_sesion")
 def realizar_pedido(request, total=0, cantidad=0):
@@ -46,22 +47,29 @@ def realizar_pedido(request, total=0, cantidad=0):
 
             dt = datetime.date(year, months, day)
             fecha_actual = dt.strftime("%Y%m%d")  # 2024 02 06
-            numero_pedido = fecha_actual + (data.id) # 2024 02 06 1.. ingremento por el id de cada pedido
+            numero_pedido = fecha_actual + (
+                data.id
+            )  # 2024 02 06 1.. ingremento por el id de cada pedido
             data.numero_pedido = numero_pedido
             data.save()
 
             # Ordenado es falso, cambia cuando realize el pago
-            pedido = Pedido.objects.get(usuario=usuario_actual, ordenado=False, numero_pedido=numero_pedido)
+            pedido = Pedido.objects.get(
+                usuario=usuario_actual, ordenado=False, numero_pedido=numero_pedido
+            )
             # Renderizamos pago porque necesitamos los datos tambien, ya que realizar pedido lo tremos lod datos del context_processors
-            return render(request, "pedido/pago.html", {
-                'pedido':pedido,
-            })
+            return render(
+                request,
+                "pedido/pago.html",
+                {
+                    "pedido": pedido,
+                },
+            )
     else:
-        # redirect alguna parte, 
+        # redirect alguna parte,
         # return redirect('realizar_pedido')
-        return redirect('')
-
+        return redirect("")
 
 
 def pago(request):
-    pass
+    return render(request, "pedido/pago.html")

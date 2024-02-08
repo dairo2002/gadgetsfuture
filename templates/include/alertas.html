@@ -1,6 +1,6 @@
 {% if messages %}
     {% for message in messages %}
-    <div id="message" class="container">        
+    <div id="messages" class="container">        
         <div{% if message.tags %} class="alert alert-{{ message.tags }}"{% endif %} role="alert">            
             {% if message.level == DEFAULT_MESSAGE_LEVELS.ERROR %}{% endif %}                
             <div class="d-flex justify-content-between align-content-center">
