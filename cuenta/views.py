@@ -11,9 +11,16 @@ from django.utils.http import urlsafe_base64_encode, urlsafe_base64_decode
 from django.utils.encoding import force_bytes
 from django.contrib.auth.tokens import default_token_generator
 from django.core.mail import EmailMessage
+from django.utils import timezone
+
 
 from carrito.views import _carrito_sesion
 from carrito.models import Carrito, CarritoSesion
+
+# Instalar: pip install requests permite hacer solicitudes HTTP, como GET,POST..
+import requests
+
+import datetime
 
 
 def registrarse(request):
@@ -99,7 +106,19 @@ def inicio_sesion(request):
             messages.success(
                 request, f"Bienvenido {usuarios.nombre} {usuarios.apellido}"
             )
-            return redirect("index")
+            # Creamos la ruta para que nos redirija a pedidos en caso tal que quiera hacer un pedido, y no aya iniciado sesion
+            url = request.META.get("HTTP_REFERER")
+            try:
+                consulta = requests.utils.urlparse(url).query
+                print("Consulta", consulta)
+                params = dict(x.split("=") for x in consulta.split("&"))
+                print("Parametro: ", params)
+                if "next" in params:
+                    nextPage = params["next"]
+                    return redirect(nextPage)
+            except:
+                # si no a la pagina de inicio
+                return redirect("index")
         else:
             messages.error(request, "Las credenciales son incorrectas")
             return redirect("inicio_sesion")
@@ -156,16 +175,16 @@ def recuperar_password(request):
 def enlace_cambiar_pwd(request, uidb64, token):
     try:
         uid = urlsafe_base64_decode(uidb64).decode()
-        user = Cuenta._default_manager.get(id=uid)
+        users = Cuenta._default_manager.get(id=uid)
     except (TypeError, ValueError, OverflowError, Cuenta.DoesNotExist):
-        user = None
+        users = None
 
-    if user is not None and default_token_generator.check_token(user, token):
+    if users is not None and default_token_generator.check_token(users, token):
         request.session["uid"] = uid
         messages.success(request, "Por favor restablecer la contraseña")
         return redirect("restablecer_password")
     else:
-        messages.success(request, "Este enlace ha caducado!")
+        messages.error(request, "Este enlace ha caducado!")
         return redirect("inicio_sesion")
 
 
@@ -179,7 +198,10 @@ def restablecer_password(request):
             user = Cuenta.objects.get(id=uid)
             user.set_password(new_password)
             user.save()
-            messages.success(request, "")
+            messages.success(
+                request,
+                "Tu contraseña ha sido guardada, prueba iniciar sesión con tu nueva contraseña",
+            )
             return redirect("inicio_sesion")
         else:
             messages.error(request, "Las contraseñas no coniciden")

@@ -17,6 +17,7 @@ def realizar_pedido(request, total=0, cantidad=0):
     usuario_actual = request.user
     carrito = Carrito.objects.filter(usuario=usuario_actual)
     contar_carrito = carrito.count()
+    pedido = 0
 
     if contar_carrito <= 0:
         return redirect("tienda")
@@ -58,17 +59,9 @@ def realizar_pedido(request, total=0, cantidad=0):
                 usuario=usuario_actual, ordenado=False, numero_pedido=numero_pedido
             )
             # Renderizamos pago porque necesitamos los datos tambien, ya que realizar pedido lo tremos lod datos del context_processors
-            return render(
-                request,
-                "pedido/pago.html",
-                {
-                    "pedido": pedido,
-                },
-            )
+            # return redirect("realizar_pedido")
     else:
-        # redirect alguna parte,
-        # return redirect('realizar_pedido')
-        return redirect("")
+        return render(request, "pedido/realizar_pedido.html", {"pedido": pedido})
 
 
 def pago(request):
