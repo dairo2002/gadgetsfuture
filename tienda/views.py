@@ -88,3 +88,27 @@ def buscar_producto(request):
             "txtBuscar": txtBusqueda,
         },
     )
+
+
+def rango_precio(request):
+    rango_precio = [
+        (0, 100000),
+        (100000, 200000),
+        (200000, 300000),
+        (300000, 400000),
+        (400000, 500000),
+    ]
+
+    productos = Producto.objects.all().order_by("precio")
+
+    producto_por_rango = {}
+    for rango in rango_precio:
+        producto_por_rango[tuple(rango)] = list(
+            producto for producto in productos if rango[0] <= producto.precio < rango[1]
+        )
+
+    return render(
+        request,
+        "tienda/tienda.html",
+        {"productos_por_rango":producto_por_rango}
+    )

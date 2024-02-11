@@ -9,27 +9,33 @@
             <h2 class="card-header">Información del pedido</h2>
             <div class="card-body mt-2 px-3">
               <p class="card-text mb-0">
-                <strong>Nombre:</strong>hhrr
+                <strong>Correo electrónico:</strong> {{ pedido.correo_electronico }}
               </p>
               <p class="card-text mb-0">
-                <strong>Nombre:</strong>hhrr
+                <strong>Nombre y apellido:</strong> {{ pedido.nombre_completo_pedido }}
               </p>
               <p class="card-text mb-0">
-                <strong>Nombre:</strong>hhrr
+                <strong>Numero pedido:</strong> {{ pedido.numero_pedido }}
               </p>
               <p class="card-text mb-0">
-                <strong>Nombre:</strong>hhrr
+                <strong>Dirección :</strong> {{ pedido.direccion_completa }}
               </p>
               <p class="card-text mb-0">
-                <strong>Nombre:</strong>hhrr
+                <strong>Teléfono:</strong> {{ pedido.telefono }}
               </p>
               <p class="card-text mb-0">
-                <strong>Nombre:</strong>hhrr
+                <strong>Departamento:</strong> {{ pedido.departamento }}
+              </p>
+              <p class="card-text mb-0">
+                <strong>Ciudad:</strong> {{ pedido.ciudad }}
+              </p>
+              <p class="card-text mb-0">
+                <strong>Código postal:</strong> <span class="mb-0" style="text-transform: uppercase;">{{ pedido.codigo_postal }}</span>
               </p>
 
               <hr />
               <div class="mt-4">
-                <table class="table">
+                <table class="table table-secondary">
                   <thead class="table-active">
                     <tr>
                       <th scope="col">Producto</th>
@@ -38,18 +44,20 @@
                     </tr>
                   </thead>
                   <tbody>
-                    <tr>
-                      <td>
-                        <img src="Img/labial.png" width="100px" alt="" />
-                      </td>
-                      <td>
-                        <p>2</p>
-                      </td>
-                      <td>
-                        <p class="mb-0">$ 200.000</p>
-                        <small class="mb-0 text-muted">$ 100.000</small>
-                      </td>
-                    </tr>
+                    {% for articulo in articulo_carrito %}
+                      <tr>
+                        <td class="align-middle">
+                          <img src="{{ articulo.producto.imagen.url }}" width="100px" height="90px" alt="imagen pedido" />
+                        </td>
+                        <td class="align-middle">
+                          <p>{{ articulo.cantidad }}</p>
+                        </td>
+                        <td class="align-middle">
+                          <p class="mb-0">$ {{ articulo.sub_total }}</p>
+                          <small class="mb-0 text-muted">$ {{ articulo.producto.precio }}</small>
+                        </td>
+                      </tr>
+                    {% endfor %}
                   </tbody>
                 </table>
               </div>
@@ -64,7 +72,7 @@
             <div class="card-body px-4">
               {% comment %} <span class="d-flex justify-content-between">Total precio:<p class="mb-1">$ 200.00</p></span> {% endcomment %}
               {% comment %} <span class="d-flex justify-content-between">Impuesto:<p class="mb-1">$ 200.00</p></span> {% endcomment %}
-              <span class="d-flex justify-content-between fs-5">Total: <strong>$10.400</strong></span>
+              <span class="d-flex justify-content-between fs-5">Total: <strong>$ {{ total }}</strong></span>
               <form action="" class="form_pago">
                 <div class="form-group my-4">
                   <div class="form-check">

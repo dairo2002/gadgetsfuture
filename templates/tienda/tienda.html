@@ -10,9 +10,10 @@
         {% endif %} {% endcomment %}
         <div class="col-4 col-md-3">
           <div class="card">
-            <h5 class="card-header">Categorías</h5>
             <div class="card-body">
-              <ul class="list-unstyled">
+              <a class="text-decoration-none text-dark fw-bold" type="button" data-bs-toggle="collapse" href="#collapseCategoria" aria-expanded="false" aria-controls="collapseCategoria">Categorías</a>
+              <hr />
+              <ul class="collapse list-unstyled" id="collapseCategoria">
                 <li>
                   <a href="{% url 'tienda' %}" class="text-decoration-none text-dark">Todos los productos</a>
                 </li>
@@ -22,6 +23,17 @@
                   </li>
                 {% endfor %}
               </ul>
+              <!-- Precio -->
+              <a class="text-decoration-none text-dark fw-bold" type="button" data-bs-toggle="collapse" href="#collapsePrecio" aria-expanded="false" aria-controls="collapsePrecio">Rango de precios</a>
+              <hr />
+              {% for rango, productos in productos_por_rango.items %}
+                <h2>Rango: ${{ rango.0 }} - ${{ rango.1 }}</h2>
+                <ul class="collapse list-unstyled" id="collapsePrecio">
+                  {% for producto in productos %}
+                    <li>{{ producto.nombre }}</li>
+                  {% endfor %}
+                </ul>
+              {% endfor %}
             </div>
           </div>
         </div>
@@ -49,7 +61,7 @@
                 {% endfor %}
                 <!-- Si no exite -->
               {% else %}
-                <h3>No se encontraron productos relacionado con la palabra<Strong> {{ txtBuscar }}</Strong></h3>
+                <h3>No se encontraron productos relacionado con la palabra<Strong>{{ txtBuscar }}</Strong></h3>
               {% endif %}
             </div>
           </div>
@@ -61,8 +73,8 @@
                 <!-- pagina anterior has_previous -->
                 {% if producto.has_previous %}
                   <li class="page-item">
-                    <!--                           número de la página anterior 
-                        - pagina, en la vista es llamado por el get                          -->
+                    <!--                                                      número de la página anterior 
+                        - pagina, en la vista es llamado por el get                                                     -->
                     <a class="page-link" href="?pagina={{ producto.previous_page_number }}">Anterior</a>
                   </li>
                 {% else %}
@@ -73,8 +85,8 @@
                 {% endif %}
 
                 {% for p in producto.paginator.page_range %}
-                  <!--                         Numeros de la paginacion 
-                Comprueba si el numero de la pagina es que corresponde                        -->
+                  <!--                                                    Numeros de la paginacion 
+                Comprueba si el numero de la pagina es que corresponde                                                   -->
                   {% if producto.number == p %}
                     <li class="page-item">
                       <a class="page-link" href="#">{{ p }}</a>

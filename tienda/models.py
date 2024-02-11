@@ -6,6 +6,7 @@ class Categoria(models.Model):
     nombre = models.CharField(max_length=200, unique=True)
     slug = models.SlugField(max_length=200, unique=True)
 
+    # Ruta de la categoria
     def get_url_categoria(self):
         return reverse("categoria_a_producto", args=[self.slug])
 

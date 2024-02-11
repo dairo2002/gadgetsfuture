@@ -14,19 +14,20 @@ class Pago(models.Model):
     def __str__(self):
         return self.pago_id
 
+
 class Pedido(models.Model):
     usuario = models.ForeignKey(Cuenta, on_delete=models.SET_NULL, null=True)
-    pago = models.ForeignKey(Pago,  on_delete=models.SET_NULL, blank=True, null=True)
+    pago = models.ForeignKey(Pago, on_delete=models.SET_NULL, blank=True, null=True)
     numero_pedido = models.CharField(max_length=50)
-    correo_electronico = models.CharField(max_length=100)
+    correo_electronico = models.EmailField(max_length=100)
     nombre = models.CharField(max_length=50)
     apellido = models.CharField(max_length=50)
     telefono = models.CharField(max_length=50)
     direccion = models.CharField(max_length=50)
     direccion_local = models.CharField(max_length=50)
-    codigo_postal = models.CharField(max_length=50)    
-    departamento = models.CharField(max_length=50)    
-    ciudad = models.CharField(max_length=50)    
+    codigo_postal = models.CharField(max_length=50)
+    departamento = models.CharField(max_length=50)
+    ciudad = models.CharField(max_length=50)
     ordenado = models.BooleanField(default=False)
     total_pedido = models.FloatField()
 
@@ -35,16 +36,21 @@ class Pedido(models.Model):
     def __str__(self):
         return self.nombre
 
+    def nombre_completo_pedido(self):
+        return f"{self.nombre} {self.apellido}"
+
+    def direccion_completa(self):
+        return f"{self.direccion} {self.direccion_local}"
+
 
 class PedidoProducto(models.Model):
     pedido = models.ForeignKey(Pedido, on_delete=models.CASCADE)
     pago = models.ForeignKey(Pago, on_delete=models.SET_NULL, blank=True, null=True)
     usuario = models.ForeignKey(Cuenta, on_delete=models.CASCADE)
-    producto = models.ForeignKey(Producto, on_delete=models.CASCADE)                
+    producto = models.ForeignKey(Producto, on_delete=models.CASCADE)
     cantidad = models.IntegerField()
     precio = models.FloatField()
-    ordenado = models.BooleanField(default=False)    
-    
+    ordenado = models.BooleanField(default=False)
 
     def __str__(self):
         return self.producto.nombre
