@@ -16,6 +16,22 @@ class Pago(models.Model):
 
 
 class Pedido(models.Model):
+    departamentos_opciones = [
+        # 1, se almacena en la base de datos, 2 se muestra en la interfaz
+        ("Amazonas", "Amazonas"),
+        ("Antioquía", "Antioquía"),
+        ("Huila", "Huila"),
+    ]
+
+    ciudades_opciones = [
+        ("Leticia", "Leticia"),
+        ("Medellin", "Medellin"),
+        ("Neiva", "Neiva"),
+    ]
+
+
+    # null = acepta valores nulos
+    # blank = Permite dejar el campo el blanco, opcional
     usuario = models.ForeignKey(Cuenta, on_delete=models.SET_NULL, null=True)
     pago = models.ForeignKey(Pago, on_delete=models.SET_NULL, blank=True, null=True)
     numero_pedido = models.CharField(max_length=50)
@@ -24,15 +40,14 @@ class Pedido(models.Model):
     apellido = models.CharField(max_length=50)
     telefono = models.CharField(max_length=50)
     direccion = models.CharField(max_length=50)
-    direccion_local = models.CharField(max_length=50)
-    codigo_postal = models.CharField(max_length=50)
-    departamento = models.CharField(max_length=50)
-    ciudad = models.CharField(max_length=50)
     ordenado = models.BooleanField(default=False)
+    direccion_local = models.CharField(max_length=50, blank=True)
+    departamento = models.CharField(max_length=50, choices=departamentos_opciones)
+    ciudad = models.CharField(max_length=50, choices=ciudades_opciones)
+    codigo_postal = models.CharField(max_length=50)
     total_pedido = models.FloatField()
 
     # puede faltar el campo de estado del pedido
-
     def __str__(self):
         return self.nombre
 

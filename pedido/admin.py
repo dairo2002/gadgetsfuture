@@ -24,12 +24,19 @@ class PedidoAdmin(admin.ModelAdmin):
         "telefono",
         "direccion",
         "direccion_local",
-        "codigo_postal",
+        # Se llama la funcion para la conversion a mayúsculas
+        "cod_postal_upper",
         "departamento",
         "ciudad",
         "ordenado",
         "total_pedido",
     )
+
+    def cod_postal_upper(self, obj):
+        return obj.codigo_postal.upper()
+
+    # Cambiar el nombre para ser mostradro en el admin
+    cod_postal_upper.short_description = 'código_postal' 
 
 
 class PedidoProductoAdmin(admin.ModelAdmin):
@@ -42,6 +49,7 @@ class PedidoProductoAdmin(admin.ModelAdmin):
         "precio",
         "ordenado",
     )
+
 
 
 #TODO revisar 

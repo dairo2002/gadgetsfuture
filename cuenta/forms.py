@@ -117,9 +117,8 @@ class RegistroForms(forms.ModelForm):
 
         # Se itera para que cada campo tenga la misma clase
         for field in self.fields:
-            self.fields[field].widget.attrs[
-                "class"
-            ] = "form-control"
+            self.fields[field].widget.attrs["class"] = "form-control"
+
 
 """
 !HACER VALIDACIONES

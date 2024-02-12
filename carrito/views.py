@@ -21,18 +21,35 @@ def add_carrito(request, producto_id):
 
     # Obtener los productos productos cuando el usuario sea autenticado
     if usuario_actual.is_authenticated:
-        try:
-            carrito = Carrito.objects.get(usuario=usuario_actual, producto=productos)
-            carrito.cantidad += 1
-            carrito.save()
-        except Carrito.DoesNotExist:
+        carrito_articulo_existe = Carrito.objects.filter(
+            usuario=usuario_actual, producto=productos
+        ).exists()
+        if carrito_articulo_existe:            
+            carrito = Carrito.objects.filter(producto=productos)
+            for cart in carrito:
+                cart.cantidad += 1
+                cart.save()
+        else:
             carrito = Carrito.objects.create(
                 producto=productos,
                 cantidad=1,
                 usuario=usuario_actual,
             )
-            carrito.save()        
+            carrito.save()
         return redirect("mostrar_carrito")
+        # try:
+        #     carrito = Carrito.objects.get(usuario=usuario_actual, producto=productos)
+        #     # carrito = Carrito.objects.get(usuario=usuario_actual, producto=productos)
+        #     carrito.cantidad += 1
+        #     carrito.save()
+        # except Carrito.DoesNotExist:
+        #     carrito = Carrito.objects.create(
+        #         producto=productos,
+        #         cantidad=1,
+        #         usuario=usuario_actual,
+        #     )
+        #     carrito.save()
+        # return redirect("mostrar_carrito")
 
     else:
         try:
@@ -55,7 +72,7 @@ def add_carrito(request, producto_id):
             carrito = Carrito.objects.create(
                 producto=productos, cantidad=1, carritoSesion=carrito_sesion
             )
-            carrito.save()    
+            carrito.save()
     return redirect("mostrar_carrito")
 
 
@@ -73,7 +90,9 @@ def delete_cantidad_carrito(request, producto_id, carrito_id):
                 producto=producto, usuario=request.user, id=carrito_id
             )
         else:
-            carrito_sesion = CarritoSesion.objects.get(carrito_session=_carrito_sesion(request))
+            carrito_sesion = CarritoSesion.objects.get(
+                carrito_session=_carrito_sesion(request)
+            )
             carrito = Carrito.objects.get(
                 producto=producto, carritoSesion=carrito_sesion, id=carrito_id
             )

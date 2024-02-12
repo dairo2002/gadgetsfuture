@@ -10,7 +10,6 @@ import datetime
 
 
 # ! TERMINAR
-# Consultar si los datos se estan enviando (POST)
 # Continuar con el proceso de pago
 
 
@@ -62,7 +61,8 @@ def realizar_pedido(request, total=0, cantidad=0):
             # )
             return redirect("pago", id_pedido=data.pk)
     else:
-        return render(request, "pedido/realizar_pedido.html")
+        formulario = PedidoForm()
+        return render(request, "pedido/realizar_pedido.html", {"form": formulario})
         # return render(request, "pedido/realizar_pedido.html", {"pedido": pedido})
 
 

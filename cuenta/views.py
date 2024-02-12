@@ -106,7 +106,7 @@ def inicio_sesion(request):
             messages.success(
                 request, f"Bienvenido {usuarios.nombre} {usuarios.apellido}"
             )
-            # Creamos la ruta para que nos redirija a pedidos en caso tal que quiera hacer un pedido, y no aya iniciado sesion
+            # Creamos la ruta para que nos redirija a pedidos en caso tal que quiera hacer un pedido
             url = request.META.get("HTTP_REFERER")
             try:
                 consulta = requests.utils.urlparse(url).query

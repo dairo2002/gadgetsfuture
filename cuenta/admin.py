@@ -7,7 +7,7 @@ class CuentaAdmin(UserAdmin):
     list_display = (
         "correo_electronico",
         "nombre",
-        "apellido",        
+        "apellido",
         "username",
         "inicio_acceso",
         "ultimo_acceso",
@@ -15,19 +15,14 @@ class CuentaAdmin(UserAdmin):
         "is_admin",
     )
 
-    ordering = ["correo_electronico"]
-    # Campos con link
-    list_display_links = ("correo_electronico", "username")
-    # Campos solo lectura
-    readonly_fields = ("inicio_acceso", "ultimo_acceso")
-    # Filtro horizontal
-    filter_horizontal = ()
+    ordering = ["correo_electronico"]  # Orden
+    list_display_links = ("correo_electronico", "username")  # Campos con link
+    readonly_fields = ("inicio_acceso", "ultimo_acceso")  # Campos solo lectura
+    filter_horizontal = ()  # Filtro horizontal
     list_filter = ["is_active", "is_superadmin"]
-    # fieldsets = (
-    #     ("informacion Personal", {"fields": ("nombre", "apellido", "correo_electronico", "usuario", 'telefono')}),
-    #     ("Permisos", {"fields": ("is_admin", "is_active", "is_staff", "is_superadmin")}),
-    # )
+    search_fields = ["nombre", "correo_electronico"]  # Toma estos campos como busqueda
     fieldsets = ()
+
 
 admin.site.register(Cuenta, CuentaAdmin)
 
