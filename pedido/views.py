@@ -1,7 +1,7 @@
 from django.shortcuts import render, redirect, get_object_or_404
 from django.contrib.auth.decorators import login_required
-from .forms import PedidoForm
-from .models import Pedido
+from .forms import PedidoForm, PagoForm
+from .models import Pedido, Pago
 from carrito.models import Carrito, CarritoSesion
 from django.contrib import messages
 
@@ -68,7 +68,33 @@ def realizar_pedido(request, total=0, cantidad=0):
 
 def pago(request, id_pedido):
     pedido = get_object_or_404(Pedido, pk=id_pedido)
-    return render(request, "pedido/pago.html", {"pedido": pedido})
+    if request.method == "POST":
+        formulario = PagoForm(request.POST, request.FILES)
+        if formulario.is_valid():
+            print("Datos del formulario:", formulario.cleaned_data)
+            data = Pago()
+            data.metodo_pago = formulario.cleaned_data["metodo_pago"]
+            data.comprobante = formulario.cleaned_data["comprobante"]
+            data.usuario = request.user
+            data.pago_id = pedido.pk
+            data.estado_pago = pedido.pk
+            data.cantidad_pagada = pedido.total_pedido
+            print("Datos antes de guardar:", data.__dict__)
+            data.save()
+
+            print("Datos después de guardar:", data.__dict__)
+            pedido.ordenado = True
+            pedido.save()
+            # Mensaje de borrador para saber si los datos fueron enviados
+            messages.success(
+                request, "Realizado el pago, Se retificara el comprobante si es valido"
+            )
+            return redirect("index")
+        else:
+            messages.error(request, "Por favor corrija los errores en el formulario.")
+    else:
+        formulario = PagoForm()
+    return render(request, "pedido/pago.html", {"pedido": pedido, "form": formulario})
 
 
 def detalle_pedido(request):

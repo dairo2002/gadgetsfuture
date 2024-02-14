@@ -8,7 +8,8 @@ class PagoAdmin(admin.ModelAdmin):
         "pago_id",
         "metodo_pago",
         "cantidad_pagada",
-        "estado",
+        "comprobante",
+        "estado_pago",
         "fecha",
     )
 

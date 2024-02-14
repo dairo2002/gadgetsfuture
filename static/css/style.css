@@ -40,9 +40,8 @@ body {
     background-color: #9eb8fa;
 }
 
-#tarjetaCredito,
 #efectivo,
-#transferencia {
+#nequi {
     cursor: pointer;
     font-size: 18px;
 }

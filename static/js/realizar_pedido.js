@@ -4,20 +4,17 @@ function mostrarDireccionLocal() {
     txtDireccionLocal.style.display = 'block'
 }
 
-document.querySelectorAll('input[name="metodoPago"]').forEach(function (radio) {
+document.querySelectorAll('input[name="metodo_pago"]').forEach(function (radio) {
     radio.addEventListener('change', function () {
-        // Ocultar todos los contenidos
-        document.getElementById('infoTarjeta').style.display = 'none';
+        // Ocultar todos los contenidos        
         document.getElementById('infoEfectivo').style.display = 'none';
-        document.getElementById('infoTransferencia').style.display = 'none';
+        document.getElementById('infoNequi').style.display = 'none';
 
         // Mostrar el contenido correspondiente a la opción seleccionada
-        if (this.value === 'tarjeta') {
-            document.getElementById('infoTarjeta').style.display = 'block';
-        } else if (this.value === 'efectivo') {
+        if (this.value === 'efectivo') {
             document.getElementById('infoEfectivo').style.display = 'block';
-        } else if (this.value === 'transferencia') {
-            document.getElementById('infoTransferencia').style.display = 'block';
+        } else if (this.value === 'nequi') {
+            document.getElementById('infoNequi').style.display = 'block';
         }
     });
 });

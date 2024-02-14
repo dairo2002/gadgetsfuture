@@ -1,37 +1,53 @@
 from django.db import models
 from cuenta.models import Cuenta
 from tienda.models import Producto
+from django.utils import timezone
 
 
 class Pago(models.Model):
+    OPCION_METODO_PAGOS = [("Efectivo", "Efectivo"), ("Nequi", "Nequi")]
+
+    OPCION_ESTADO_PAGOS = [
+        ("Aceptado", "Aceptado"),
+        ("Cancelado", "Cancelado"),
+    ]
+
     usuario = models.ForeignKey(Cuenta, on_delete=models.CASCADE)
     pago_id = models.CharField(max_length=100)
     metodo_pago = models.CharField(max_length=50)
+    # metodo_pago = models.CharField(max_length=50, choices=OPCION_METODO_PAGOS)
     cantidad_pagada = models.CharField(max_length=100)
-    estado = models.CharField(max_length=50)
-    fecha = models.DateTimeField(auto_now_add=True)
+    # numero_pago
+    # El estado puede ser, Aceptado o cancelado
+    # Que es en caso de que el admin valide si el comprobante es valido
+    # Corregir que no sea blank=True
+    comprobante = models.ImageField(upload_to="comprobantes/")
+    estado_pago = models.CharField(max_length=50)
+
+    # Tambien se puede crear como checkout
+    # estado_pago = models.CharField(default=False)
+    fecha = models.DateTimeField(default=timezone.now)
 
     def __str__(self):
-        return self.pago_id
+        return self.metodo_pago
 
 
 class Pedido(models.Model):
-    departamentos_opciones = [
+    OPCION_DEPARTAMENTO = [
         # 1, se almacena en la base de datos, 2 se muestra en la interfaz
         ("Amazonas", "Amazonas"),
         ("Antioquía", "Antioquía"),
         ("Huila", "Huila"),
     ]
 
-    ciudades_opciones = [
+    OPCION_CIUDADES = [
         ("Leticia", "Leticia"),
         ("Medellin", "Medellin"),
         ("Neiva", "Neiva"),
     ]
 
-
     # null = acepta valores nulos
-    # blank = Permite dejar el campo el blanco, opcional
+    # blank = Permite dejar el campo en blanco, opcional
     usuario = models.ForeignKey(Cuenta, on_delete=models.SET_NULL, null=True)
     pago = models.ForeignKey(Pago, on_delete=models.SET_NULL, blank=True, null=True)
     numero_pedido = models.CharField(max_length=50)
@@ -42,8 +58,8 @@ class Pedido(models.Model):
     direccion = models.CharField(max_length=50)
     ordenado = models.BooleanField(default=False)
     direccion_local = models.CharField(max_length=50, blank=True)
-    departamento = models.CharField(max_length=50, choices=departamentos_opciones)
-    ciudad = models.CharField(max_length=50, choices=ciudades_opciones)
+    departamento = models.CharField(max_length=50, choices=OPCION_DEPARTAMENTO)
+    ciudad = models.CharField(max_length=50, choices=OPCION_CIUDADES)
     codigo_postal = models.CharField(max_length=50)
     total_pedido = models.FloatField()
 

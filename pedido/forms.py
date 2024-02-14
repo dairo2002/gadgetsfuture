@@ -1,5 +1,5 @@
 from django import forms
-from .models import Pedido
+from .models import Pedido, Pago
 
 
 class PedidoForm(forms.ModelForm):
@@ -17,20 +17,47 @@ class PedidoForm(forms.ModelForm):
             "codigo_postal",
         ]
 
-
     def __init__(self, *args, **kwargs):
         super(PedidoForm, self).__init__(*args, **kwargs)
         self.fields["nombre"].widget.attrs["placeholder"] = "Nombre"
         self.fields["apellido"].widget.attrs["placeholder"] = "Apellido"
-        self.fields["correo_electronico"].widget.attrs["placeholder"] = "Dirección correo electrónico"
+        self.fields["correo_electronico"].widget.attrs[
+            "placeholder"
+        ] = "Dirección correo electrónico"
         self.fields["telefono"].widget.attrs["placeholder"] = "Numero telefónico"
         self.fields["direccion"].widget.attrs["placeholder"] = "Dirección"
-        self.fields["direccion_local"].widget.attrs["placeholder"] = "Casa,apartamento,etc.(opcional)"
+        self.fields["direccion_local"].widget.attrs[
+            "placeholder"
+        ] = "Casa,apartamento,etc.(opcional)"
         self.fields["direccion_local"].widget.attrs["id"] = "txtDireccionLocal"
         self.fields["direccion_local"].widget.attrs["style"] = "display:none;"
-        self.fields["departamento"].widget.attrs["placeholder"] = "Elige" 
+        self.fields["departamento"].widget.attrs["placeholder"] = "Elige"
         self.fields["ciudad"].widget.attrs["placeholder"] = "Elige"
-        self.fields["codigo_postal"].widget.attrs["style"] = "text-transform: uppercase;"
-        
+        self.fields["codigo_postal"].widget.attrs[
+            "style"
+        ] = "text-transform: uppercase;"
+
         for field in self.fields:
-            self.fields[field].widget.attrs[ "class" ]="form-control" 
+            self.fields[field].widget.attrs["class"] = "form-control"
+
+
+class PagoForm(forms.ModelForm):
+    metodo_pago = forms.ChoiceField(
+        choices=(
+            ("Efectivo", "Efectivo"),
+            ("Nequi", "Nequi"),
+        ),
+        widget=forms.RadioSelect,
+    )
+
+    class Meta:
+        model = Pago
+        fields = [
+            "metodo_pago",
+            "comprobante",
+        ]
+
+        # widgets = {
+        #     "metodo_pago": forms.RadioSelect(attrs={"class": ""}),
+        #     "comprobante": forms.FileInput(attrs={"accept": "image/*", "class": "form-control"})
+        # }
