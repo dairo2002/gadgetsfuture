@@ -29,17 +29,20 @@
     </button>
   </div>
 
+
+
   <section>
     <div class="container">
       <h4 class="text-center my-4 fw-bold">LO NUEVO</h4>
       <div class="row d-flex justify-content-center justify-content-lg-start justify-content-xxl-start">
         {% for productos in producto %}
           <div class="col-10 col-sm-6 col-md-5 col-lg-4 col-xl-3 mb-4">
-            <div class="card h-100 border-0 shadow bg-light">
+            <div class="card tarjeta_productos h-100">
               <div class="card-body">
-                <a href="{{ productos.get_url_producto }}" class=""><img src="{{ productos.imagen.url }}" class="card-img-top rounded-3 mb-2 object-fit-contain" height="300px" alt="imagen producto" /></a>
+                <a href="{{ productos.get_url_producto }}"><img src="{{ productos.imagen.url }}" class="card-img-top rounded-3 mb-2" alt="imagen producto" /></a>
                 <h5 class="card-title">{{ productos.nombre }}</h5>
-                <p class="fw-semibold">{{ productos.precio|floatformat:3 }}</p>
+                {% comment %} <p class="fw-semibold">{{ productos.precio|floatformat:3 }}</p> {% endcomment %}
+                <p class="fw-semibold">{{ productos.descuento_con_precio }}</p>
                 {% if productos.stock <= 0 %}
                   <h5 class="card-title text-danger">Agotado</h5>
                 {% else %}

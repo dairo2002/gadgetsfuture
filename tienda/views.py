@@ -4,6 +4,7 @@ from carrito.models import Carrito, CarritoSesion
 from carrito.context_processors import _carrito_sesion
 from django.contrib import messages
 
+# Q es utilizado para consultas complejas
 from django.db.models import Q
 
 from django.core.paginator import EmptyPage, PageNotAnInteger, Paginator
@@ -59,7 +60,7 @@ def detalle_producto(request, categoria_slug, producto_slug):
     )
 
 
-def buscar_producto(request):
+def filtro_buscar_producto(request):
     palabra_busqueda = None
     contar_productos = 0
     if "txtBusqueda" in request.GET:
@@ -81,7 +82,7 @@ def buscar_producto(request):
     # El metodo va a la esta vista tienda.html. por que la vista del navbar.html es incluida en el HTML base, por lo tanto no tiene ruta
     return render(
         request,
-        "tienda/tienda.html",
+        "tienda/tienda.html",        
         {
             "producto": palabra_busqueda,
             "contador_producto": contar_productos,
@@ -90,25 +91,22 @@ def buscar_producto(request):
     )
 
 
-def rango_precio(request):
-    rango_precio = [
-        (0, 100000),
-        (100000, 200000),
-        (200000, 300000),
-        (300000, 400000),
-        (400000, 500000),
-    ]
-
-    productos = Producto.objects.all().order_by("precio")
-
-    producto_por_rango = {}
-    for rango in rango_precio:
-        producto_por_rango[tuple(rango)] = list(
-            producto for producto in productos if rango[0] <= producto.precio < rango[1]
+def filtro_rango_precios(request):
+    try:
+        precio_minimo = request.POST.get("min_precio")
+        precio_maximo = request.POST.get("max_precio")
+    except ValueError:
+        # Mostrar mensaje de error al usuario
+        return render(
+            request,
+            "tienda/tienda.html",
+            {"error": "Los valores de precio no son válidos"},
         )
 
+    productos = Producto.objects.filter(Q(precio__range=[precio_minimo, precio_maximo]))
+    contar_productos = productos.count()
     return render(
         request,
         "tienda/tienda.html",
-        {"productos_por_rango":producto_por_rango}
+        {"filtro_precio": productos, "contador_producto": contar_productos},
     )

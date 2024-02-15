@@ -4,6 +4,7 @@ from tienda.models import Producto
 from django.utils import timezone
 
 
+
 class Pago(models.Model):
     OPCION_METODO_PAGOS = [("Efectivo", "Efectivo"), ("Nequi", "Nequi")]
 
@@ -15,22 +16,16 @@ class Pago(models.Model):
     usuario = models.ForeignKey(Cuenta, on_delete=models.CASCADE)
     pago_id = models.CharField(max_length=100)
     metodo_pago = models.CharField(max_length=50)
-    # metodo_pago = models.CharField(max_length=50, choices=OPCION_METODO_PAGOS)
     cantidad_pagada = models.CharField(max_length=100)
-    # numero_pago
-    # El estado puede ser, Aceptado o cancelado
-    # Que es en caso de que el admin valide si el comprobante es valido
-    # Corregir que no sea blank=True
     comprobante = models.ImageField(upload_to="comprobantes/")
     estado_pago = models.CharField(max_length=50)
-
     # Tambien se puede crear como checkout
     # estado_pago = models.CharField(default=False)
     fecha = models.DateTimeField(default=timezone.now)
 
     def __str__(self):
         return self.metodo_pago
-
+   
 
 class Pedido(models.Model):
     OPCION_DEPARTAMENTO = [

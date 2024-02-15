@@ -30,7 +30,8 @@ body {
 .form_registrarse input:focus,
 .form_inicio_sesion input:focus,
 .form_pedido input:focus,
-.form_pago input:focus {
+.form_pago input:focus,
+.form_filtro_precio input:focus {
     box-shadow: none;
     border-color: gray;
 }

@@ -1,17 +1,12 @@
 {% extends 'base.html' %}
 {% block content %}
-  <div class="d-flex justify-content-center">
-    <div class="col-12 col-md-10 my-5">
+  <section>
+    <div class="container my-4">
       <div class="row">
-        {% comment %} {% if 'search' in request.path %}
-          <h2>Resultado de la busqueda</h2>
-        {% else %}
-          <h2>Hola</h2>
-        {% endif %} {% endcomment %}
-        <div class="col-4 col-md-3">
+        <div class="col-lg-3">
           <div class="card">
             <div class="card-body">
-              <a class="text-decoration-none text-dark fw-bold" type="button" data-bs-toggle="collapse" href="#collapseCategoria" aria-expanded="false" aria-controls="collapseCategoria">Categorías</a>
+              <a class="text-decoration-none text-dark fw-bold" type="button" data-bs-toggle="collapse" href="#collapseCategoria" aria-expanded="false" aria-controls="collapseCategoria">Categorías <i class="fa-solid fa-chevron-down"></i></a>
               <hr />
               <ul class="collapse list-unstyled" id="collapseCategoria">
                 <li>
@@ -24,44 +19,60 @@
                 {% endfor %}
               </ul>
               <!-- Precio CORREGIR -->
-              <a class="text-decoration-none text-dark fw-bold" type="button" data-bs-toggle="collapse" href="#collapsePrecio" aria-expanded="false" aria-controls="collapsePrecio">Rango de precios</a>
+              <a class="text-decoration-none text-dark fw-bold" type="button" data-bs-toggle="collapse" href="#collapsePrecio" aria-expanded="false" aria-controls="collapsePrecio">Rango de precios <i class="fa-solid fa-chevron-down"></i></a>
               <hr />
-              {% for rango, productos in productos_por_rango.items %}
-                <h2>Rango: ${{ rango.0 }} - ${{ rango.1 }}</h2>
-                <ul class="collapse list-unstyled" id="collapsePrecio">
-                  {% for producto in productos %}
-                    <li>{{ producto.nombre }}</li>
-                  {% endfor %}
-                </ul>
-              {% endfor %}
+              <div class="collapse" id="collapsePrecio">
+                <form action="{% url 'filtro_precios' %}" method="POST" class="form_filtro_precio px-5">
+                  {% csrf_token %}
+                  <label for="">Mínimo</label>
+                  <input type="text" class="form-control" name="min_precio" placeholder="Precio mínimo" value="{{ request.GET.min_precio }}" />
+                  <label for="">Máximo</label>
+                  <input type="text" class="form-control" name="max_precio" placeholder="Precio máximo" value="{{ request.GET.max_precio }}" />
+                  <button type="submit" class="btn btn-warning mt-3 w-100">Aplicar</button>
+                </form>
+              </div>
             </div>
           </div>
         </div>
-        <div class="col-8 col-md-9">
-          <p>
+        <div class="col-lg-9">
+          <p class="mt-3 mt-lg-0">
             <strong>{{ contador_producto }}</strong> Productos
           </p>
-          <hr my-3 />
+          <hr class="" />
           <div class="card bg-body-tertiary pt-3 p-md-3">
             <div class="row">
               <!-- Condicion del campo de busque de productos, si exite muestra el producto -->
               {% if producto %}
                 <!-- Se recorre Bucle for mostrando todos los productos, con sus expecificaciones -->
                 {% for productos in producto %}
-                  <div class="col-10 col-md-6 col-xl-4 mx-auto mb-4">
+                  <div class="col-10 col-md-6 col-xl-4 mb-4 mx-auto mx-md-0">
                     <div class="card h-100 border-1">
-                      <div class="card-body">
+                      <div class="card-body tarjeta_productos">
                         <a href="{{ productos.get_url_producto }}" class=""><img src="{{ productos.imagen.url }}" class="card-img-top rounded-3 mb-2" alt="imagen producto" /></a>
                         <h5 class="card-title">{{ productos.nombre }}</h5>
-                        <p class="fw-semibold opacity-75">{{ productos.precio }}</p>
+                        <p class="fw-semibold opacity-75">$ {{ productos.precio }}</p>
                         <a href="{{ productos.get_url_producto }}" class="btn btn-primary w-100">Detalle producto</a>
                       </div>
                     </div>
                   </div>
                 {% endfor %}
                 <!-- Si no exite -->
+              {% elif filtro_precio %}
+                {% for filtro_producto in filtro_precio %}
+                  <div class="col-10 col-md-6 col-xl-4 mb-4 mx-auto mx-md-0">
+                    <div class="card h-100 border-1">
+                      <div class="card-body tarjeta_productos">
+                        <a href="{{ filtro_producto.get_url_producto }}" class=""><img src="{{ filtro_producto.imagen.url }}" class="card-img-top rounded-3 mb-2" alt="imagen producto" /></a>
+                        <h5 class="card-title">{{ filtro_producto.nombre }}</h5>
+                        <p class="fw-semibold opacity-75">$ {{ filtro_producto.precio }}</p>
+                        <a href="{{ filtro_producto.get_url_producto }}" class="btn btn-primary w-100">Detalle producto</a>
+                      </div>
+                    </div>
+                  </div>
+                {% endfor %}
               {% else %}
-                <h3>No se encontraron productos relacionado con la palabra<Strong>{{ txtBuscar }}</Strong></h3>
+                {% comment %} <h3>No se encontraron productos relacionado con la palabra<Strong>{{ txtBuscar }}</Strong></h3> {% endcomment %}
+                <h3>No se encontraron productos por precio ni por filtro</h3>
               {% endif %}
             </div>
           </div>
@@ -73,8 +84,8 @@
                 <!-- pagina anterior has_previous -->
                 {% if producto.has_previous %}
                   <li class="page-item">
-                    <!--                                                      número de la página anterior 
-                        - pagina, en la vista es llamado por el get                                                     -->
+                    <!--                                                                             número de la página anterior 
+                        - pagina, en la vista es llamado por el get                                                                            -->
                     <a class="page-link" href="?pagina={{ producto.previous_page_number }}">Anterior</a>
                   </li>
                 {% else %}
@@ -85,8 +96,8 @@
                 {% endif %}
 
                 {% for p in producto.paginator.page_range %}
-                  <!--                                                    Numeros de la paginacion 
-                Comprueba si el numero de la pagina es que corresponde                                                   -->
+                  <!--                                                                           Numeros de la paginacion 
+                Comprueba si el numero de la pagina es que corresponde                                                                          -->
                   {% if producto.number == p %}
                     <li class="page-item">
                       <a class="page-link" href="#">{{ p }}</a>
@@ -116,5 +127,5 @@
         </div>
       </div>
     </div>
-  </div>
+  </section>
 {% endblock %}
