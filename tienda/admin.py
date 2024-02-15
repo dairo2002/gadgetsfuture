@@ -3,7 +3,7 @@ from .models import Categoria, Producto
 
 class CategoriaAdmin(admin.ModelAdmin):
     prepopulated_fields = {"slug": ("nombre",)}
-    list_display = ('nombre','slug', 'descuento', 'fecha_descuento')
+    list_display = ('nombre','slug', 'descuento', 'fecha_inicio')
 
 
 class ProductoAdmin(admin.ModelAdmin):

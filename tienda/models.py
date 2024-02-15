@@ -1,7 +1,7 @@
 from django.db import models
 from django.urls import reverse
 from decimal import Decimal
-
+from django.utils import timezone
 
 class Categoria(models.Model):
     nombre = models.CharField(max_length=200, unique=True)
@@ -9,7 +9,8 @@ class Categoria(models.Model):
     descuento = models.DecimalField(
         max_digits=12, decimal_places=3, null=True, blank=True
     )
-    fecha_descuento = models.DateTimeField(null=True, blank=True)
+    fecha_inicio = models.DateTimeField(null=True, blank=True)
+    fecha_fin = models.DateTimeField(null=True, blank=True)
 
     # Ruta de la categoria
     def get_url_categoria(self):
@@ -36,17 +37,17 @@ class Producto(models.Model):
         return reverse("detalle_producto", args=[self.categoria.slug, self.slug])
 
     def descuento_con_precio(self):
-        # La condicion verifica si la categoria tiene tiene un descuento
-        if self.categoria.descuento:
-            # Convierte el descuento de procentaje a decimal
-            # descuento_decimal = Decimal(self.categoria.descuento / 100)
-            descuento_decimal = self.categoria.descuento / 100
-            # Calcula el precio con descuento
-            precio_descuento = self.precio - (self.precio * descuento_decimal)
-            return precio_descuento
-        else:
-            # Si no hay descuento, retorna el precio original del producto
-            return self.precio
+        # Verificar si la categoría tiene un descuento y si las fechas de inicio y fin están definidas
+        if self.categoria.descuento and self.categoria.fecha_inicio and self.categoria.fecha_fin:
+            # Verificar si la fecha actual está dentro del rango de fechas de inicio y fin del descuento            
+            fecha_actual = timezone.now()
+            if self.categoria.fecha_inicio <= fecha_actual <= self.categoria.fecha_fin:
+                # Convierte el descuento de procentaje a decimal
+                descuento_decimal = self.categoria.descuento / 100
+                # Calcula el precio con descuento
+                precio_descuento = self.precio - (self.precio * descuento_decimal)
+                return precio_descuento   
+        return self.precio
 
     
 

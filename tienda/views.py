@@ -78,33 +78,50 @@ def filtro_buscar_producto(request):
 
             # Contador de productos encontrados
             contar_productos = palabra_busqueda.count()
+            if contar_productos == 0:
+                error_busqueda = (
+                    f"No se encontraron productos que coincidan con la palabra: {txtBusqueda}"
+                )
 
     # El metodo va a la esta vista tienda.html. por que la vista del navbar.html es incluida en el HTML base, por lo tanto no tiene ruta
     return render(
         request,
-        "tienda/tienda.html",        
+        "tienda/tienda.html",
         {
             "producto": palabra_busqueda,
             "contador_producto": contar_productos,
             "txtBuscar": txtBusqueda,
+            "error_busqueda": error_busqueda,
         },
     )
 
 
 def filtro_rango_precios(request):
     try:
-        precio_minimo = request.POST.get("min_precio")
-        precio_maximo = request.POST.get("max_precio")
+        precio_minimo = float(request.POST.get("min_precio"))
+        precio_maximo = float(request.POST.get("max_precio"))
     except ValueError:
         # Mostrar mensaje de error al usuario
         return render(
             request,
             "tienda/tienda.html",
-            {"error": "Los valores de precio no son válidos"},
+            {"error_precio": "Los valores de precio son inválidos"},
         )
 
-    productos = Producto.objects.filter(Q(precio__range=[precio_minimo, precio_maximo]))
-    contar_productos = productos.count()
+    if precio_minimo is not None and precio_maximo is not None:
+
+        productos = Producto.objects.filter(
+            Q(precio__range=[precio_minimo, precio_maximo])
+        )
+        # Ordenar los producto por el precio menor a mayor
+        productos = productos.order_by("precio")
+        contar_productos = productos.count()
+    else:
+        return render(
+            request,
+            "tienda/tienda.html",
+            {"error_precio": "Los valores de precio deben ser números"},
+        )
     return render(
         request,
         "tienda/tienda.html",
