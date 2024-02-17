@@ -5,22 +5,26 @@ from django.utils import timezone
 
 
 
-class Pago(models.Model):
-    OPCION_METODO_PAGOS = [("Efectivo", "Efectivo"), ("Nequi", "Nequi")]
+class Pago(models.Model):   
+    OPCIONES_ESTADO_PAGOS = [
+        ("Verificacion", "Verificacion"),
+        ("Aprobado", "Aprobado"),
+        ("Rechazado", "Rechazado"),
+    ]
 
-    OPCION_ESTADO_PAGOS = [
-        ("Aceptado", "Aceptado"),
-        ("Cancelado", "Cancelado"),
+    OPCIONES_ENVIO = [
+        ("En espera de pago", "En espera de pago"),
+        ("Enviado", "Enviado"),
+        ("Rechazado", "Rechazado"),
+        # Entregado
     ]
 
     usuario = models.ForeignKey(Cuenta, on_delete=models.CASCADE)
-    pago_id = models.CharField(max_length=100)
     metodo_pago = models.CharField(max_length=50)
     cantidad_pagada = models.CharField(max_length=100)
     comprobante = models.ImageField(upload_to="comprobantes/")
-    estado_pago = models.CharField(max_length=50)
-    # Tambien se puede crear como checkout
-    # estado_pago = models.CharField(default=False)
+    estado_pago = models.CharField(max_length=50, choices=OPCIONES_ESTADO_PAGOS, default="Verificacion")
+    estado_envio = models.CharField(max_length=50, choices=OPCIONES_ENVIO, default='En espera de pago')
     fecha = models.DateTimeField(default=timezone.now)
 
     def __str__(self):

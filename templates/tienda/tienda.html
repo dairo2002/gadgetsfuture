@@ -1,7 +1,7 @@
 {% extends 'base.html' %}
 {% block content %}
   <section>
-    <div class="container my-4">        
+    <div class="container my-4">
       <div class="row">
         <div class="col-lg-3">
           <div class="card">
@@ -18,7 +18,6 @@
                   </li>
                 {% endfor %}
               </ul>
-              <!-- Precio CORREGIR -->
               <a class="text-decoration-none text-dark fw-bold" type="button" data-bs-toggle="collapse" href="#collapsePrecio" aria-expanded="false" aria-controls="collapsePrecio">Rango de precios <i class="fa-solid fa-chevron-down"></i></a>
               <hr />
               <div class="collapse" id="collapsePrecio">
@@ -28,7 +27,7 @@
                   <input type="text" class="form-control" name="min_precio" placeholder="Precio mínimo" value="{{ request.GET.min_precio }}" />
                   <label for="">Máximo</label>
                   <input type="text" class="form-control" name="max_precio" placeholder="Precio máximo" value="{{ request.GET.max_precio }}" />
-                  <button type="submit" class="btn btn-warning mt-3 w-100">Aplicar</button>
+                  <button type="submit" class="btn btn-outline-primary mt-3 w-100">Aplicar</button>
                 </form>
               </div>
             </div>
@@ -44,17 +43,18 @@
               <!-- Condicion del campo de busque de productos, si exite muestra el producto -->
               {% if producto %}
                 <!-- Se recorre Bucle for mostrando todos los productos, con sus expecificaciones -->
-                {% for productos in producto %}
-                  <div class="col-10 col-md-6 col-xl-4 mb-4 mx-auto mx-md-0">
-                    <div class="card h-100 border-1">
-                      <div class="card-body tarjeta_productos">
-                        <a href="{{ productos.get_url_producto }}" class=""><img src="{{ productos.imagen.url }}" class="card-img-top rounded-3 mb-2" alt="imagen producto" /></a>
-                        <h5 class="card-title">{{ productos.nombre }}</h5>
-                        <p class="fw-semibold opacity-75">$ {{ productos.precio }}</p>
-                        <a href="{{ productos.get_url_producto }}" class="btn btn-primary w-100">Detalle producto</a>
+                {% for productos in producto %}               
+                    <div class="col-10 col-md-6 col-xl-4 mb-4 mx-auto mx-md-0">
+                      <div class="card h-100 border-1">
+                        <div class="card-body tarjeta_productos">
+                          <a href="{{ productos.get_url_producto }}" class=""><img src="{{ productos.imagen.url }}" class="card-img-top rounded-3 mb-2" alt="imagen producto" /></a>
+                          <h5 class="card-title">{{ productos.nombre }}</h5>
+                          <p class="fw-semibold opacity-75">$ {{ productos.descuento_con_precio }}</p>                                                 
+                          <small class="fw-semibold opacity-75">$ {{ productos.precio }}</small>
+                          <a href="{{ productos.get_url_producto }}" class="btn btn-outline-secondary w-100">Detalle producto</a>
+                        </div>
                       </div>
-                    </div>
-                  </div>
+                    </div>                  
                 {% endfor %}
                 <!-- Si exite el rango de filtro de precios -->
               {% elif filtro_precio %}
@@ -64,16 +64,17 @@
                       <div class="card-body tarjeta_productos">
                         <a href="{{ filtro_producto.get_url_producto }}" class=""><img src="{{ filtro_producto.imagen.url }}" class="card-img-top rounded-3 mb-2" alt="imagen producto" /></a>
                         <h5 class="card-title">{{ filtro_producto.nombre }}</h5>
-                        <p class="fw-semibold opacity-75">$ {{ filtro_producto.precio }}</p>
-                        <a href="{{ filtro_producto.get_url_producto }}" class="btn btn-primary w-100">Detalle producto</a>
+                        <p class="fw-semibold opacity-75">$ {{ filtro_producto.descuento_con_precio }}</p>
+                        <small class="fw-semibold opacity-75">$ {{ filtro_producto.precio }}</small>
+                        <a href="{{ filtro_producto.get_url_producto }}" class="btn btbtn-outline-secondary w-100">Detalle producto</a>
                       </div>
                     </div>
                   </div>
                 {% endfor %}
               {% else %}
                 {% comment %} <h3>No se encontraron productos relacionado con la palabra <b>{{ txtBuscar }}</b></h3> {% endcomment %}
-                <h3>{{error_precio}}</h3>
-                <h3>{{error_busqueda}}</h3>
+                <h3>{{ error_precio }}</h3>
+                <h3>{{ error_busqueda }}</h3>
               {% endif %}
             </div>
           </div>
@@ -85,8 +86,8 @@
                 <!-- pagina anterior has_previous -->
                 {% if producto.has_previous %}
                   <li class="page-item">
-                    <!--                                                                                número de la página anterior 
-                        - pagina, en la vista es llamado por el get                                                                               -->
+                    <!--                                                                                 número de la página anterior 
+                        - pagina, en la vista es llamado por el get                                                                                -->
                     <a class="page-link" href="?pagina={{ producto.previous_page_number }}">Anterior</a>
                   </li>
                 {% else %}
@@ -97,8 +98,8 @@
                 {% endif %}
 
                 {% for p in producto.paginator.page_range %}
-                  <!--                                                                              Numeros de la paginacion 
-                Comprueba si el numero de la pagina es que corresponde                                                                             -->
+                  <!--                                                                               Numeros de la paginacion 
+                Comprueba si el numero de la pagina es que corresponde                                                                              -->
                   {% if producto.number == p %}
                     <li class="page-item">
                       <a class="page-link" href="#">{{ p }}</a>

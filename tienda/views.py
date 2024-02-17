@@ -79,10 +79,17 @@ def filtro_buscar_producto(request):
             # Contador de productos encontrados
             contar_productos = palabra_busqueda.count()
             if contar_productos == 0:
-                error_busqueda = (
-                    f"No se encontraron productos que coincidan con la palabra: {txtBusqueda}"
-                )
+                # error_busqueda = (
+                #     f"No se encontraron productos que coincidan con la palabra: {txtBusqueda}"
+                # )
 
+                return render(
+                    request,
+                    "tienda/tienda.html",
+                    {
+                        "error_busqueda": "No se encontraron productos que coincidan con la palabra"
+                    },
+                )
     # El metodo va a la esta vista tienda.html. por que la vista del navbar.html es incluida en el HTML base, por lo tanto no tiene ruta
     return render(
         request,
@@ -91,7 +98,6 @@ def filtro_buscar_producto(request):
             "producto": palabra_busqueda,
             "contador_producto": contar_productos,
             "txtBuscar": txtBusqueda,
-            "error_busqueda": error_busqueda,
         },
     )
 

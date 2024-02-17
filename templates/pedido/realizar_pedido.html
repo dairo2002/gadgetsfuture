@@ -2,7 +2,7 @@
 {% load static %}
 {% block content %}
   <section>
-    <div class="container my-3">
+    <div class="container my-4">
       <form action="{% url 'realizar_pedido' %}" method="POST" class="form_pedido">
         {% csrf_token %}
         <div class="row">
@@ -44,7 +44,7 @@
                 </div>
               </div>
 
-              <hr class="my-4" />
+              {% comment %} <hr class="my-4" />
               <div class="form-check">
                 <input type="checkbox" class="form-check-input" id="same-address" />
                 <label class="form-check-label" for="same-address">La dirección de envío es la misma que mi dirección de facturación</label>
@@ -52,24 +52,8 @@
               <div class="form-check">
                 <input type="checkbox" class="form-check-input" id="save-info" />
                 <label class="form-check-label" for="save-info">Guardar esta información para la próxima vez</label>
-              </div>
-              <ul class="list-group mt-3">
-                <li class="list-group-item d-flex justify-content-between bg-light">
-                  <div class="">
-                    <h6 class="">Código promocional</h6>
-                  </div>
-                </li>
-                <li class="list-group-item">
-                  <div class="d-flex justify-content-between my-3">
-                    <h4>Total (COP)</h4>
-                    <h4>{{ total }}</h4>
-                  </div>
-                  <div class="input-group">
-                    <input type="text" class="form-control" placeholder="Código Promo" />
-                    <button type="button" class="btn btn-warning">Aplicar</button>
-                  </div>
-                </li>
-              </ul>
+              </div> {% endcomment %}
+            
             </div>
           </div>
           <div class="col-lg-5">
@@ -94,20 +78,7 @@
                 {% endfor %}
               </div>
 
-              {% comment %} <ul>
-                {% for articulo in articulo_carrito %}
-                  <li class="d-flex justify-content-center">
-                    <img src="{{ articulo.producto.imagen.url }}" width="150px" alt="" />
-                    <div>
-                      <h6 class="">{{ articulo.producto.nombre }}</h6>
-                      <p class="mb-0 mt-4">Cantidad {{ articulo.cantidad }}</p>
-                      <small><p class="mb-0">Precio: $ {{ articulo.producto.precio }}</p></small>
-                      <p class="mb-0">Sub total: $ {{ articulo.sub_total }}</p>
-                    </div>
-                  </li>
-                  <hr />
-                {% endfor %}
-              </ul> {% endcomment %}
+         
               <div class="row my-2 p-3">
                 <button type="submit" class="btn btn-outline-primary">Realizar pago</button>
                 <a href="{% url 'tienda' %}" class="btn btn-outline-secondary mt-2">Continuar comprando</a>

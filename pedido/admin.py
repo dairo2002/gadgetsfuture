@@ -5,12 +5,12 @@ from django.utils.html import format_html
 
 class PagoAdmin(admin.ModelAdmin):
     list_display = (
-        "usuario",
-        "pago_id",
+        "usuario",        
         "metodo_pago",
         "cantidad_pagada",                
         "cargar_imagen",
         "estado_pago",
+        'estado_envio',
         "fecha",
     )
 

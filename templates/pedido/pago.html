@@ -70,13 +70,19 @@
             <h3 class="card-header">Método de Pago</h3>
 
             <div class="card-body px-4">
-              <span class="d-flex justify-content-between fs-5">Total: <strong>$ {{ total }}</strong></span>
+              <span class="d-flex justify-content-between fs-5 mb-4">Total: <strong>$ {{ total }}</strong></span>
               <form action="{% url 'pago' pedido.id %}" method="POST" enctype="multipart/form-data" class="form_pago">
                 {% csrf_token %}
-                {{form.as_p}}
-                <button type="submit" class="btn btn-outline-success mt-2 w-100">Pagar</button>
+                <span >Número de cuenta: <b>312-222-0001</b></span>
+                <div class="mt-2">
+                    {{ form.metodo_pago }}
+                    <br>
+                    <p class="mb-1">Subir comprobante: </p>
+                    {{ form.comprobante }}
+                </div>
+                <button type="submit" class="btn btn-outline-secondary mt-4 w-100">Pagar</button>
               </form>
-              
+
               <small class="my-2">Revise su pedido y realice el pago</small>
             </div>
           </div>

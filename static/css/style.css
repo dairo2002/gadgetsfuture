@@ -4,24 +4,56 @@ body {
     font-family: 'Quicksand';
 }
 
+.bg_header {
+    /* background-color: #192655; */
+    /* background-color: #1B1A55 ; */
+    background-color: #022C43;
+}
+
+.bg_footer,
+.bg_menu,
+.btn_buscador {
+    /* background-color: #c01a1a; */
+    background-color: #115173;
+}
+
+.btn_buscador:hover {
+    /* background-color: #c01a1a; */
+    background-color: #115173;
+}
+
+.btn_carrito {
+    /* background-color: #c01a1a; */
+    background-color: #115173;
+    border-radius: 50%;
+    width: 50px;
+    height: 50px;
+}
+
+.btn_carrito:hover {
+    /* background-color: #c01a1a; */
+    background-color: #022C43;
+}
+
 .campoBuscar {
-    width: 450px;
+    width: 400px;
 }
 
 .tarjeta_productos {
     max-width: 350px;
-    max-height: 420px;      
+    max-height: 420px;
 }
 
 
 .tarjeta_productos img {
     height: 250px;
-    transition: transform 0.3s ease; 
-    overflow: hidden; /* Oculta cualquier parte de la imagen que desborde del contenedor */     
+    transition: transform 0.3s ease;
+    overflow: hidden;
+    /* Oculta cualquier parte de la imagen que desborde del contenedor */
 }
 
 .tarjeta_productos img:hover {
-    transform: scale(1.1);        
+    transform: scale(1.1);
 }
 
 

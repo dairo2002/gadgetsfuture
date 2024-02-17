@@ -1,0 +1,17 @@
+{% autoescape off %}
+Estimado {{usuario.nombre}},
+
+Nos complace informarle que su pedido ha sido aprobado y está en proceso de envío.
+
+Detalles del pedido:
+- Número de pedido: [Número de pedido]
+- Fecha del pedido: [Fecha del pedido]
+
+Estado del pago: Aprobado
+Estado del envío: Aprobado
+
+Le mantendremos informado sobre el estado de envío y cualquier actualización adicional.
+
+Gracias por su compra y confianza en Gadgets Future!
+
+{% endautoescape %}

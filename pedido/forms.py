@@ -57,7 +57,7 @@ class PagoForm(forms.ModelForm):
             "comprobante",
         ]
 
-        # widgets = {
-        #     "metodo_pago": forms.RadioSelect(attrs={"class": ""}),
-        #     "comprobante": forms.FileInput(attrs={"accept": "image/*", "class": "form-control"})
-        # }
+    def __init__(self, *args, **kwargs):
+        super(PagoForm, self).__init__(*args, **kwargs)
+        # Agregar clases de Bootstrap a los campos        
+        self.fields['comprobante'].widget.attrs["class"] = "form-control"

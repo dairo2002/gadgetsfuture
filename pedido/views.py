@@ -5,6 +5,15 @@ from .models import Pedido, Pago
 from carrito.models import Carrito, CarritoSesion
 from django.contrib import messages
 
+# 
+from django.db.models.signals import post_save
+from django.dispatch import receiver
+
+# Correo electronico
+from django.template.loader import render_to_string
+from django.core.mail import EmailMessage
+
+
 
 import datetime
 
@@ -70,21 +79,24 @@ def pago(request, id_pedido):
     pedido = get_object_or_404(Pedido, pk=id_pedido)
     if request.method == "POST":
         formulario = PagoForm(request.POST, request.FILES)
-        if formulario.is_valid():
-            print("Datos del formulario:", formulario.cleaned_data)
+        if formulario.is_valid():       
+
             data = Pago()
             data.metodo_pago = formulario.cleaned_data["metodo_pago"]
             data.comprobante = formulario.cleaned_data["comprobante"]
             data.usuario = request.user
-            data.pago_id = pedido.pk
-            data.estado_pago = pedido.pk
             data.cantidad_pagada = pedido.total_pedido
-            print("Datos antes de guardar:", data.__dict__)
             data.save()
+            
 
-            print("Datos después de guardar:", data.__dict__)
+            # ? Corregir mas tarde
             pedido.ordenado = True
             pedido.save()
+
+            # ? Cuando el pedido sea realizado eliminar los productos del carrito
+            # ? Disminur el incremnento en el stock                         
+
+
             # Mensaje de borrador para saber si los datos fueron enviados
             messages.success(
                 request, "Realizado el pago, Se retificara el comprobante si es valido"
@@ -95,6 +107,29 @@ def pago(request, id_pedido):
     else:
         formulario = PagoForm()
     return render(request, "pedido/pago.html", {"pedido": pedido, "form": formulario})
+
+@receiver(post_save, sender=Pago)
+def email_verificacion_comprobante(request, sender, instance, created, **kwargs):
+    if instance.estado_pago == 'Aprobado' and instance.estado_pago == 'Enviado':
+        # Consultar informacion del pedido
+        pedido = Pedido.objects.all() 
+
+
+        mail_subject = '¡Su pedido ha sido aprobado!'
+        # Renderizar el mensaje de email
+        mensage = render_to_string(
+            'pedido/email_pedido.html',   
+            {
+                'usuario':request.user,
+                'pedido': pedido
+            }     
+        )
+
+        to_email = instance.usuario
+        send_email = EmailMessage(mail_subject, mensage, to=[to_email])
+        send_email.send()
+
+
 
 
 def detalle_pedido(request):
