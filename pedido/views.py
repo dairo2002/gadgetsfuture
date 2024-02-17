@@ -102,14 +102,18 @@ def pago(request, id_pedido):
                 request, "Realizado el pago, Se retificara el comprobante si es valido"
             )
             return redirect("index")
+        
+
         else:
             messages.error(request, "Por favor corrija los errores en el formulario.")
     else:
         formulario = PagoForm()
     return render(request, "pedido/pago.html", {"pedido": pedido, "form": formulario})
 
+
+
 @receiver(post_save, sender=Pago)
-def email_verificacion_comprobante(request, sender, instance, created, **kwargs):
+def email_verificacion_comprobante(sender, instance, created, **kwargs):
     if instance.estado_pago == 'Aprobado' and instance.estado_pago == 'Enviado':
         # Consultar informacion del pedido
         pedido = Pedido.objects.all() 
@@ -120,14 +124,37 @@ def email_verificacion_comprobante(request, sender, instance, created, **kwargs)
         mensage = render_to_string(
             'pedido/email_pedido.html',   
             {
-                'usuario':request.user,
+                # 'usuario':request.user,
                 'pedido': pedido
             }     
         )
 
-        to_email = instance.usuario
+        to_email = instance.usuario.correo_electronico
         send_email = EmailMessage(mail_subject, mensage, to=[to_email])
         send_email.send()
+
+        print('Correo electrónico enviado correctamente para el pedido:', instance.id)
+        
+
+# def email_info_pedido(request):
+#     pago = Pago()
+#     if pago.estado_pago == 'Aprobado' and pago.estado_envio == 'Enviado':
+#         # Consultar informacion del pedido
+#         pedido = Pedido() 
+
+#         mail_subject = '¡Su pedido ha sido aprobado!'
+#         # Renderizar el mensaje de email
+#         mensage = render_to_string(
+#             'pedido/email_pedido.html',   
+#             {
+#                 # 'usuario':request.user,
+#                 'numero_pedido': pedido.numero_pedido,                
+#             }     
+#         )
+
+#         to_email = pago.usuario.correo_electronico
+#         send_email = EmailMessage(mail_subject, mensage, to=[to_email])
+#         send_email.send()
 
 
 

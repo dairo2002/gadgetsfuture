@@ -14,6 +14,13 @@ class PagoAdmin(admin.ModelAdmin):
         "fecha",
     )
 
+    def save_model(self, request, obj, form, change):
+        if 'estado_pago' in form.changed_data or 'estado_envio' in form.changed_data:
+            # Si alguno de los campos de estado cambia, actualiza solo esos campos
+            obj.save(update_fields=['estado_pago', 'estado_envio'])
+        else:
+            obj.save()
+
     # Funcion creada para cargar la imagen del comprobante en el admin
     def cargar_imagen(self, obj):
         if obj.comprobante:
