@@ -43,6 +43,9 @@ INSTALLED_APPS = [
     "carrito",
     "cuenta",
     "pedido",
+
+    
+    'admin_thumbnails',
 ]
 
 MIDDLEWARE = [

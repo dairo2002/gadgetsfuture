@@ -2,8 +2,7 @@ from django.db import models
 from cuenta.models import Cuenta
 from tienda.models import Producto
 from django.utils import timezone
-
-
+from django.db.models import Q
 
 class Pago(models.Model):   
     OPCIONES_ESTADO_PAGOS = [
@@ -21,7 +20,7 @@ class Pago(models.Model):
 
     usuario = models.ForeignKey(Cuenta, on_delete=models.CASCADE)
     metodo_pago = models.CharField(max_length=50)
-    cantidad_pagada = models.CharField(max_length=100)
+    cantidad_pagada = models.DecimalField(max_digits=12, decimal_places=3)    
     comprobante = models.ImageField(upload_to="comprobantes/")
     estado_pago = models.CharField(max_length=50, choices=OPCIONES_ESTADO_PAGOS, default="Verificacion")
     estado_envio = models.CharField(max_length=50, choices=OPCIONES_ENVIO, default='En espera de pago')
@@ -30,6 +29,8 @@ class Pago(models.Model):
     def __str__(self):
         return self.metodo_pago
    
+
+
 
 class Pedido(models.Model):
     OPCION_DEPARTAMENTO = [
@@ -60,7 +61,8 @@ class Pedido(models.Model):
     departamento = models.CharField(max_length=50, choices=OPCION_DEPARTAMENTO)
     ciudad = models.CharField(max_length=50, choices=OPCION_CIUDADES)
     codigo_postal = models.CharField(max_length=50)
-    total_pedido = models.FloatField()
+    total_pedido = models.DecimalField(max_digits=12, decimal_places=3)
+    # total_pedido = models.FloatField()
 
     # puede faltar el campo de estado del pedido
     def __str__(self):
@@ -68,6 +70,9 @@ class Pedido(models.Model):
 
     def nombre_completo_pedido(self):
         return f"{self.nombre} {self.apellido}"
+    
+    def region(self):
+        return f'{self.ciudad}-{self.departamento}'
 
     def direccion_completa(self):
         return f"{self.direccion} {self.direccion_local}"

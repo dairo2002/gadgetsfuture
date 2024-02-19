@@ -43,36 +43,66 @@
               <!-- Condicion del campo de busque de productos, si exite muestra el producto -->
               {% if producto %}
                 <!-- Se recorre Bucle for mostrando todos los productos, con sus expecificaciones -->
-                {% for productos in producto %}               
+                {% for productos in producto %}
+                  {% if productos.categoria.descuento %}
                     <div class="col-10 col-md-6 col-xl-4 mb-4 mx-auto mx-md-0">
                       <div class="card h-100 border-1">
                         <div class="card-body tarjeta_productos">
                           <a href="{{ productos.get_url_producto }}" class=""><img src="{{ productos.imagen.url }}" class="card-img-top rounded-3 mb-2" alt="imagen producto" /></a>
-                          <h5 class="card-title">{{ productos.nombre }}</h5>
-                          <p class="fw-semibold opacity-75">$ {{ productos.descuento_con_precio }}</p>                                                 
-                          <small class="fw-semibold opacity-75">$ {{ productos.precio }}</small>
-                          <a href="{{ productos.get_url_producto }}" class="btn btn-outline-secondary w-100">Detalle producto</a>
+                          <h6 class="fw-semibold">{{ productos.nombre }}</h6>
+                          <span>$ {{ productos.descuento_con_precio }}</span>
+                          <del>
+                            <small class="text-muted mx-2">$ {{ productos.precio }}</small>
+                          </del>
+                          <a href="{{ productos.get_url_producto }}" class="btn btn-outline-secondary w-100 mt-2">Detalle producto</a>
                         </div>
                       </div>
-                    </div>                  
+                    </div>
+                  {% else %}
+                    <div class="col-10 col-md-6 col-xl-4 mb-4 mx-auto mx-md-0">
+                      <div class="card h-100 border-1">
+                        <div class="card-body tarjeta_productos">
+                          <a href="{{ productos.get_url_producto }}" class=""><img src="{{ productos.imagen.url }}" class="card-img-top rounded-3 mb-2" alt="imagen producto" /></a>
+                          <h6 class="fw-semibold">{{ productos.nombre }}</h6>
+                          <span>$ {{ productos.precio }}</span>
+                          <a href="{{ productos.get_url_producto }}" class="btn btn-outline-secondary w-100 mt-2">Detalle producto</a>
+                        </div>
+                      </div>
+                    </div>
+                  {% endif %}
                 {% endfor %}
                 <!-- Si exite el rango de filtro de precios -->
               {% elif filtro_precio %}
-                {% for filtro_producto in filtro_precio %}
-                  <div class="col-10 col-md-6 col-xl-4 mb-4 mx-auto mx-md-0">
-                    <div class="card h-100 border-1">
-                      <div class="card-body tarjeta_productos">
-                        <a href="{{ filtro_producto.get_url_producto }}" class=""><img src="{{ filtro_producto.imagen.url }}" class="card-img-top rounded-3 mb-2" alt="imagen producto" /></a>
-                        <h5 class="card-title">{{ filtro_producto.nombre }}</h5>
-                        <p class="fw-semibold opacity-75">$ {{ filtro_producto.descuento_con_precio }}</p>
-                        <small class="fw-semibold opacity-75">$ {{ filtro_producto.precio }}</small>
-                        <a href="{{ filtro_producto.get_url_producto }}" class="btn btbtn-outline-secondary w-100">Detalle producto</a>
+                {% for filtro in filtro_precio %}
+                  {% if filtro.categoria.descuento %}
+                    <div class="col-10 col-md-6 col-xl-4 mb-4 mx-auto mx-md-0">
+                      <div class="card h-100 border-1">
+                        <div class="card-body tarjeta_productos">
+                          <a href="{{ filtro.get_url_producto }}" class=""><img src="{{ filtro.imagen.url }}" class="card-img-top rounded-3 mb-2" alt="imagen producto" /></a>
+                          <h6 class="fw-semibold">{{ filtro.nombre }}</h6>
+                          <span>$ {{ filtro.descuento_con_precio }}</span>
+                          <del>
+                            <small class="text-muted mx-2">$ {{ filtro.precio }}</small>
+                          </del>
+                          <a href="{{ filtro.get_url_producto }}" class="btn btn-outline-secondary w-100 mt-2">Detalle producto</a>
+                        </div>
                       </div>
                     </div>
-                  </div>
+                  {% else %}
+                    <div class="col-10 col-md-6 col-xl-4 mb-4 mx-auto mx-md-0">
+                      <div class="card h-100 border-1">
+                        <div class="card-body tarjeta_productos">
+                          <a href="{{ filtro.get_url_producto }}" class=""><img src="{{ filtro.imagen.url }}" class="card-img-top rounded-3 mb-2" alt="imagen producto" /></a>
+                          <h6 class="fw-semibold">{{ filtro.nombre }}</h6>
+                          <span>$ {{ filtro.precio }}</span>
+                          <a href="{{ filtro.get_url_producto }}" class="btn btn-outline-secondary w-100 mt-2">Detalle producto</a>
+                        </div>
+                      </div>
+                    </div>
+                  {% endif %}
                 {% endfor %}
               {% else %}
-                {% comment %} <h3>No se encontraron productos relacionado con la palabra <b>{{ txtBuscar }}</b></h3> {% endcomment %}
+                {% comment %}Errores de busqueda y de filtro de precio{% endcomment %}
                 <h3>{{ error_precio }}</h3>
                 <h3>{{ error_busqueda }}</h3>
               {% endif %}
@@ -86,8 +116,8 @@
                 <!-- pagina anterior has_previous -->
                 {% if producto.has_previous %}
                   <li class="page-item">
-                    <!--                                                                                 número de la página anterior 
-                        - pagina, en la vista es llamado por el get                                                                                -->
+                    <!--                                                                                              número de la página anterior 
+                        - pagina, en la vista es llamado por el get                                                                                             -->
                     <a class="page-link" href="?pagina={{ producto.previous_page_number }}">Anterior</a>
                   </li>
                 {% else %}
@@ -98,8 +128,8 @@
                 {% endif %}
 
                 {% for p in producto.paginator.page_range %}
-                  <!--                                                                               Numeros de la paginacion 
-                Comprueba si el numero de la pagina es que corresponde                                                                              -->
+                  <!--                                                                                            Numeros de la paginacion 
+                Comprueba si el numero de la pagina es que corresponde                                                                                           -->
                   {% if producto.number == p %}
                     <li class="page-item">
                       <a class="page-link" href="#">{{ p }}</a>

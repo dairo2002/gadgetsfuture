@@ -1,37 +1,55 @@
 from django.contrib import admin
 from .models import Pago, Pedido, PedidoProducto
 from django.utils.html import format_html
-
+from django.contrib.contenttypes.admin import GenericTabularInline
 
 class PagoAdmin(admin.ModelAdmin):
     list_display = (
-        "usuario",        
+        "usuario",
         "metodo_pago",
-        "cantidad_pagada",                
+        "cantidad_pagada",
         "cargar_imagen",
         "estado_pago",
-        'estado_envio',
+        "estado_envio",
         "fecha",
     )
 
-    def save_model(self, request, obj, form, change):
-        if 'estado_pago' in form.changed_data or 'estado_envio' in form.changed_data:
-            # Si alguno de los campos de estado cambia, actualiza solo esos campos
-            obj.save(update_fields=['estado_pago', 'estado_envio'])
-        else:
-            obj.save()
+    # radio_fields = {'estado_pago': admin.VERTICAL}
+
+    list_editable = ("estado_pago", "estado_envio")
+    list_display_links = ["cargar_imagen", "usuario"]
+    list_per_page = 5
+    fieldsets = (
+        (
+            "Información del Pago",
+            {
+                "fields": ("usuario", "metodo_pago", "cantidad_pagada", "fecha"),
+            },
+        ),
+        (
+            "Estado del Pago y Envío",
+            {
+                "fields": ("estado_pago", "estado_envio"),
+            },
+        ),
+        (
+            "Cargar Imagen",
+            {
+                "fields": ("comprobante",),
+            },
+        ),
+    )
 
     # Funcion creada para cargar la imagen del comprobante en el admin
     def cargar_imagen(self, obj):
         if obj.comprobante:
-            return format_html(
-                '<img src="{}" width="100" height="100" alt="imagen comprobante">'.format(
+            return format_html(                
+                '<a href="{0}"><img src="{0}" style="max-height: 50px; max-width: 50px;"></a>'.format(
                     obj.comprobante.url
                 )
             )
-        
-    cargar_imagen.short_description = "Comprobante"
 
+    cargar_imagen.short_description = "Comprobante"
 
 
 class PedidoAdmin(admin.ModelAdmin):
@@ -57,7 +75,7 @@ class PedidoAdmin(admin.ModelAdmin):
         return obj.codigo_postal.upper()
 
     # Cambiar el nombre para ser mostradro en el admin
-    cod_postal_upper.short_description = "código_postal"
+    cod_postal_upper.short_description = "Código_postal"
 
 
 class PedidoProductoAdmin(admin.ModelAdmin):

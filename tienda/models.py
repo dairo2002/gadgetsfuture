@@ -3,11 +3,12 @@ from django.urls import reverse
 from decimal import Decimal
 from django.utils import timezone
 
+
 class Categoria(models.Model):
     nombre = models.CharField(max_length=200, unique=True)
     slug = models.SlugField(max_length=200, unique=True)
     descuento = models.DecimalField(
-        max_digits=12, decimal_places=3, null=True, blank=True
+        max_digits=12, decimal_places=0, null=True, blank=True
     )
     fecha_inicio = models.DateTimeField(null=True, blank=True)
     fecha_fin = models.DateTimeField(null=True, blank=True)
@@ -38,21 +39,20 @@ class Producto(models.Model):
 
     def descuento_con_precio(self):
         # Verificar si la categoría tiene un descuento y si las fechas de inicio y fin están definidas
-        if self.categoria.descuento and self.categoria.fecha_inicio and self.categoria.fecha_fin:
-            # Verificar si la fecha actual está dentro del rango de fechas de inicio y fin del descuento            
+        if (
+            self.categoria.descuento
+            and self.categoria.fecha_inicio
+            and self.categoria.fecha_fin
+        ):
+            # Verificar si la fecha actual está dentro del rango de fechas de inicio y fin del descuento
             fecha_actual = timezone.now()
             if self.categoria.fecha_inicio <= fecha_actual <= self.categoria.fecha_fin:
                 # Convierte el descuento de procentaje a decimal
                 descuento_decimal = self.categoria.descuento / 100
                 # Calcula el precio con descuento
                 precio_descuento = self.precio - (self.precio * descuento_decimal)
-                return precio_descuento   
+                return precio_descuento
         return self.precio
-
-    
-
-
-    
 
     # TODO Explicacion
 

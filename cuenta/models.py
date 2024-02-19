@@ -63,8 +63,6 @@ class Cuenta(AbstractBaseUser):
     telefono = models.CharField(max_length=12)
 
     # Permisos campos requeridos
-    # inicio_acceso = models.DateField(auto_now_add=True)
-    # ultimo_acceso = models.DateField(auto_now_add=True)
     inicio_acceso = models.DateField(default=timezone.now)
     ultimo_acceso = models.DateField(default=timezone.now)
     # Algunos campos son creados en ingles para no tener error, en el modelo pretederterminado que ofrece django
