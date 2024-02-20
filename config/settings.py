@@ -38,14 +38,15 @@ INSTALLED_APPS = [
     "django.contrib.sessions",
     "django.contrib.messages",
     "django.contrib.staticfiles",
+
+    "django.contrib.humanize",
     # 'bootstrap5',
     "tienda",
     "carrito",
     "cuenta",
     "pedido",
 
-    
-    'admin_thumbnails',
+    # "admin_thumbnails",
 ]
 
 MIDDLEWARE = [
@@ -128,7 +129,7 @@ AUTH_PASSWORD_VALIDATORS = [
 
 LANGUAGE_CODE = "es"  # Idioma español
 
-TIME_ZONE = "America/Bogota" # Tiempo actual
+TIME_ZONE = "America/Bogota"  # Tiempo actual
 
 USE_I18N = True
 
