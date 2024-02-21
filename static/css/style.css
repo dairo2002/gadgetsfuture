@@ -12,26 +12,22 @@ body {
 
 .bg_footer,
 .bg_menu,
-.btn_buscador {
-    /* background-color: #c01a1a; */
+.btn_buscador {    
     background-color: #115173;
 }
 
-.btn_buscador:hover {
-    /* background-color: #c01a1a; */
+.btn_buscador:hover {    
     background-color: #115173;
 }
 
-.btn_carrito {
-    /* background-color: #c01a1a; */
+.btn_carrito {    
     background-color: #115173;
     border-radius: 50%;
     width: 50px;
     height: 50px;
 }
 
-.btn_carrito:hover {
-    /* background-color: #c01a1a; */
+.btn_carrito:hover {    
     background-color: #022C43;
 }
 
@@ -48,8 +44,7 @@ body {
 .tarjeta_productos img {
     height: 250px;
     transition: transform 0.3s ease;
-    overflow: hidden;
-    /* Oculta cualquier parte de la imagen que desborde del contenedor */
+    overflow: hidden;    
 }
 
 .tarjeta_productos img:hover {

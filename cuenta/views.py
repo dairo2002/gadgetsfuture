@@ -26,15 +26,13 @@ import datetime
 def registrarse(request):
     if request.method == "POST":
         # Crea una instancia de RegistroForms con los datos del formulario que el usuario ha enviado a través de una solicitud POST.
-        formulario = RegistroForms(request.POST)
-        # print(f"Datos: {formulario}")
+        formulario = RegistroForms(request.POST)        
         if formulario.is_valid():
             nombre = formulario.cleaned_data["nombre"]
             apellido = formulario.cleaned_data["apellido"]
             correo_electronico = formulario.cleaned_data["correo_electronico"]
             telefono = formulario.cleaned_data["telefono"]
-            password = formulario.cleaned_data["password"]
-            # Confirmar contraseña no alamacena, se validad si coniciden. (validacion forms.py)
+            password = formulario.cleaned_data["password"]           
 
             # Toma la dirección de correo electrónico y extrae el como nombre de usuario lo que antes símbolo "@", con esto tambien evitamos repetidos
             usuario = correo_electronico.split("@")[0]
@@ -50,7 +48,7 @@ def registrarse(request):
 
             # El campo de telefono es guardado de esta forma porque es un campo obligatorio
             crear_usuario.telefono = telefono
-            crear_usuario.save()  # Se guarda este usuario en la db
+            crear_usuario.save()
 
             usuarios = auth.authenticate(
                 correo_electronico=correo_electronico, password=password
@@ -63,12 +61,12 @@ def registrarse(request):
                     f"Registro exito {usuarios.nombre} {usuarios.apellido}",
                 )
             return redirect("index")
-        else:
-            messages.error(request, "Error en el formulario de registro")
+        # else:
+            # messages.error(request, "Error en el formulario de registro")
     else:
         # obtener los campos de formulario vacios
-        formu = RegistroForms()
-    return render(request, "cuenta/registrarse.html", {"form": formu})
+        formulario = RegistroForms()
+    return render(request, "cuenta/registrarse.html", {"form": formulario})
 
 
 def inicio_sesion(request):

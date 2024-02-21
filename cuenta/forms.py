@@ -1,13 +1,5 @@
-import re
-from typing import Any
 from django import forms
 from .models import Cuenta
-
-# Validacion email
-from django.core.exceptions import ValidationError
-from django.core.validators import validate_email
-
-# Crear el formulario de Registro
 
 
 class RegistroForms(forms.ModelForm):
@@ -28,9 +20,7 @@ class RegistroForms(forms.ModelForm):
         fields = ["nombre", "apellido", "correo_electronico", "telefono", "password"]
 
     # Funcion clean() validar campos
-    def clean_confirm_pwd(
-        self,
-    ):  # funciona con el clean() solo, pero no mestra los errores, clena_password() confirm_pwd=None
+    def clean_confirm_pwd(self):
         cleaned_data = super(RegistroForms, self).clean()
 
         password = cleaned_data.get("password")
@@ -38,60 +28,48 @@ class RegistroForms(forms.ModelForm):
 
         print(f"Registro: password {password} confirmar_password: {confirmar_password}")
 
-        # Validamos si las dos contraseñas conciden
         if password != confirmar_password:
             raise forms.ValidationError("Las contraseñas no coinciden")
-            # raise self.add_error('Las contraseñas no coinciden')
+
+        if (
+            len(password) < 5
+            or len(password) > 12
+            and len(confirmar_password) < 5
+            or len(confirmar_password) > 12
+        ):
+            raise forms.ValidationError(
+                "Las contraseña debe tener de 5 a 12 caracteres"
+            )
 
         return password
 
-        """ 
-        # ! Corregir solo valida la primer validacion que hay en la funcion 
+    def clean_nombre(self):
+        nombre = self.cleaned_data.get("nombre")
 
-            if len(password) < 5:
+        if any(char.isdigit() for char in nombre):
+            raise forms.ValidationError("El nombre no puede tener números")
+
+        if len(nombre) < 3 or len(nombre) > 15:
+            raise forms.ValidationError("El nombre debe tener entre 3 y 15 caracteres")
+
+        return nombre
+
+    def clean_apellido(self):
+        nombre = self.cleaned_data.get("apellido")
+
+        if any(char.isdigit() for char in nombre):
+            raise forms.ValidationError("El apellido no puede tener números")
+
+        if len(nombre) < 3 or len(nombre) > 15:
             raise forms.ValidationError(
-                "La contraseña debe tener como minimo 5 caracteres"
+                "El apellido debe tener entre 3 y 15 caracteres"
             )
 
-        if not re.search("[0-9]", password):
-            raise forms.ValidationError("La contraseña debe tener al menos un número")
-
-        if not re.search(["a-z"], password):
-            raise forms.ValidationError(
-                "La contraseña debe tener al menos una minúscula"
-            )
-
-        if not re.search(["A-Z"], password):
-            raise forms.ValidationError(
-                "La contraseña debe tener al menos una mayúscula"
-            )
-        
-        """
-
-    # !! Corregir
-    """
-    def clean_correo(self):
-        correo_electronico = self.cleaned_data.get("correo_electronico")
-
-        print(f"Correo: {correo_electronico}")
-
-        # Convertir el correo a minusculas
-        correo_electronico = correo_electronico.lower()
-
-        # Devuelve true si la cadena termina con un valor en expecifico
-        if correo_electronico.endswith("@gmail.com"):
-            raise forms.ValidationError(
-                "La dirección de correo electrónico no termina en gmail.com"
-            )
-
-        return correo_electronico      
-   """
+        return nombre
 
     def clean_telefono(self):
-        # Validacion telefono
         telefono = self.cleaned_data.get("telefono")
 
-        # if telefono is not None:
         if not telefono.isdigit():
             raise forms.ValidationError("El teléfono debe tener solo números")
 
@@ -101,10 +79,6 @@ class RegistroForms(forms.ModelForm):
             )
 
         return telefono
-
-    # ? No se esta utilizando
-    # el método __init__ se utiliza para ajustar la apariencia y comportamiento
-    # de los campos del formulario según las necesidades específicas de diseño de tu aplicación
 
     def __init__(self, *args, **kwargs):
         super(RegistroForms, self).__init__(*args, **kwargs)

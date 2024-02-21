@@ -94,4 +94,4 @@ class Cuenta(AbstractBaseUser):
         return f"{self.nombre} {self.apellido}"
 
 
-# ? Por ultimo, Configurar el modelo de cuenta el settings.py
+# ? Por ultimo, Configurar el modelo de cuenta de usuario en el settings.py para que sea establecido en admin

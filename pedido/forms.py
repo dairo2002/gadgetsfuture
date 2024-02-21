@@ -17,15 +17,16 @@ class PedidoForm(forms.ModelForm):
             "codigo_postal",
         ]
 
-    def clean_telefono(self):
-        telefono = self.cleaned_data.get("telefono")
-        if not telefono.isdigit():
-            raise forms.ValidationError("El teléfono debe tener solo números")
-        if len(telefono) < 8 or len(telefono) > 10:
-            raise forms.ValidationError(
-                "El número de teléfono debe tener entre 8 y 10 dígitos"
-            )
-        return telefono
+    # ! Corregir
+    # def clean_telefono(self):
+    #     telefono = self.cleaned_data.get("telefono")
+    #     if not telefono.isdigit():
+    #         raise forms.ValidationError("El teléfono debe tener solo números")
+    #     if len(telefono) < 8 or len(telefono) > 10:
+    #         raise forms.ValidationError(
+    #             "El número de teléfono debe tener entre 8 y 10 dígitos"
+    #         )
+    #     return telefono
 
     def __init__(self, *args, **kwargs):
         super(PedidoForm, self).__init__(*args, **kwargs)
