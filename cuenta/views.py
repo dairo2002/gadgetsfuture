@@ -61,10 +61,7 @@ def registrarse(request):
                     f"Registro exito {usuarios.nombre} {usuarios.apellido}",
                 )
             return redirect("index")
-        # else:
-            # messages.error(request, "Error en el formulario de registro")
-    else:
-        # obtener los campos de formulario vacios
+    else:       
         formulario = RegistroForms()
     return render(request, "cuenta/registrarse.html", {"form": formulario})
 

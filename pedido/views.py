@@ -21,16 +21,11 @@ from cuenta.models import Cuenta
 import datetime
 
 
-# ! TERMINAR
-# Continuar con el proceso de pago
-
-
 @login_required(login_url="inicio_sesion")
 def realizar_pedido(request, total=0, cantidad=0):
     usuario_actual = request.user
     carrito = Carrito.objects.filter(usuario=usuario_actual)
     contar_carrito = carrito.count()
-    pedido = 0
 
     if contar_carrito <= 0:
         return redirect("tienda")
@@ -38,6 +33,7 @@ def realizar_pedido(request, total=0, cantidad=0):
     for articulo in carrito:
         total += articulo.producto.precio * articulo.cantidad
         cantidad += articulo.cantidad
+
     if request.method == "POST":
         formulario = PedidoForm(request.POST)
         if formulario.is_valid():
@@ -61,7 +57,7 @@ def realizar_pedido(request, total=0, cantidad=0):
             day = int(datetime.date.today().strftime("%d"))
 
             dt = datetime.date(year, months, day)
-            fecha_actual = dt.strftime("%Y%m%d") 
+            fecha_actual = dt.strftime("%Y%m%d")
             # 2024 02 06 1.. ingremento por el id de cada pedido
             num_pedido = fecha_actual + str(data.id)
             data.numero_pedido = num_pedido
@@ -70,7 +66,7 @@ def realizar_pedido(request, total=0, cantidad=0):
             return redirect("pago", id_pedido=data.pk)
     else:
         formulario = PedidoForm()
-        return render(request, "pedido/realizar_pedido.html", {"form": formulario})
+    return render(request, "pedido/realizar_pedido.html", {"form": formulario})
 
 
 def pago(request, id_pedido):
@@ -86,8 +82,11 @@ def pago(request, id_pedido):
             data.cantidad_pagada = pedido.total_pedido
             data.save()
 
+            pedido.pago = data
+            pedido.save()
+
             messages.success(
-                request, "Pago exitoso, Se retificara el comprobante es valido"
+                request, "Pago exitoso, Se verificara si el comprobante es valido"
             )
             return redirect("index")
 
@@ -102,11 +101,15 @@ def pago(request, id_pedido):
 def email_info_pedido(sender, instance, **kwargs):
     if instance.estado_pago == "Aprobado" and instance.estado_envio == "Enviado":
         usuario = instance.usuario
-
+        pago = Pago()
         datos = Pedido.objects.filter(usuario=usuario)
         for pedido in datos:
             pedido.ordenado = True
             pedido.save()
+
+            # pago_obj = pago.metodo_pago
+            # pedido.pago = pago_obj
+            # pago_obj.save()
 
         mail_subject = "¡Su pedido ha sido aprobado!"
         mensaje = render_to_string(

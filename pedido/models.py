@@ -62,9 +62,7 @@ class Pedido(models.Model):
     ciudad = models.CharField(max_length=50, choices=OPCION_CIUDADES)
     codigo_postal = models.CharField(max_length=50)
     total_pedido = models.DecimalField(max_digits=12, decimal_places=3)
-    # total_pedido = models.FloatField()
-
-    # puede faltar el campo de estado del pedido
+    
     def __str__(self):
         return self.nombre
 
@@ -78,14 +76,3 @@ class Pedido(models.Model):
         return f"{self.direccion} {self.direccion_local}"
 
 
-class PedidoProducto(models.Model):
-    pedido = models.ForeignKey(Pedido, on_delete=models.CASCADE)
-    pago = models.ForeignKey(Pago, on_delete=models.SET_NULL, blank=True, null=True)
-    usuario = models.ForeignKey(Cuenta, on_delete=models.CASCADE)
-    producto = models.ForeignKey(Producto, on_delete=models.CASCADE)
-    cantidad = models.IntegerField()
-    precio = models.FloatField()
-    ordenado = models.BooleanField(default=False)
-
-    def __str__(self):
-        return self.producto.nombre

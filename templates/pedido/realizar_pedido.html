@@ -10,11 +10,31 @@
             <div class="card p-3">
               <h4 class="mb-3 mt-2">Contacto:</h4>
               <div class="row g-3 justify-content-between">
-                <div class="col-12">{{ form.correo_electronico }}</div>
+                <div class="col-12">
+                  {{ form.correo_electronico }}
+                  {% for error in form.correo_electronico.errors %}
+                    <small><i class="fa-solid fa-circle-exclamation" style="color: #c60c0c;"></i> {{ error }}</small>
+                  {% endfor %}
+                </div>
                 <h4 class="mb-2 mt-5">Detalles De Facturación:</h4>
-                <div class="col-sm-6">{{ form.nombre }}</div>
-                <div class="col-sm-6">{{ form.apellido }}</div>
-                <div class="col-6">{{ form.telefono }}</div>
+                <div class="col-sm-6">
+                  {{ form.nombre }}
+                  {% for error in form.nombre.errors %}
+                    <small><i class="fa-solid fa-circle-exclamation" style="color: #c60c0c;"></i> {{ error }}</small>
+                  {% endfor %}
+                </div>
+                <div class="col-sm-6">
+                  {{ form.apellido }}
+                  {% for error in form.apellido.errors %}
+                    <small><i class="fa-solid fa-circle-exclamation" style="color: #c60c0c;"></i> {{ error }}</small>
+                  {% endfor %}
+                </div>
+                <div class="col-6">
+                  {{ form.telefono }}
+                  {% for error in form.telefono.errors %}
+                    <small><i class="fa-solid fa-circle-exclamation" style="color: #c60c0c;"></i> {{ error }}</small>
+                  {% endfor %}
+                </div>
                 <div class="col-6">{{ form.direccion }}</div>
                 <div class="col-12">
                   <a id="linkDireccionLocal" onclick="mostrarDireccionLocal()" style="cursor: pointer;" class="text-success">Agregar apartamento,local,etc.</a>
@@ -33,7 +53,7 @@
                   {{ form.codigo_postal }}
                 </div>
               </div>
-              <div>{{ errors }}</div>
+
               {% comment %} <hr class="my-4" />
               <div class="form-check">
                 <input type="checkbox" class="form-check-input" id="same-address" />

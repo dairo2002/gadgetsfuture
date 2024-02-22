@@ -1,5 +1,5 @@
 from django.contrib import admin
-from .models import Pago, Pedido, PedidoProducto
+from .models import Pago, Pedido
 from django.utils.html import format_html
 from django.contrib.contenttypes.admin import GenericTabularInline
 
@@ -78,24 +78,6 @@ class PedidoAdmin(admin.ModelAdmin):
     cod_postal_upper.short_description = "Código_postal"
 
 
-class PedidoProductoAdmin(admin.ModelAdmin):
-    list_display = (
-        "pedido",
-        "pago",
-        "usuario",
-        "producto",
-        "cantidad",
-        "precio",
-        "ordenado",
-    )
-
-
-# TODO revisar
-# class PedidoProductoInline(admin.TabularInline):
-#     model = PedidoProducto
-#     readonly_fields = ("pago_fk", "user_fk", "producto_fk", "cantidad", "producto_precio", 'ordenado')
-
 
 admin.site.register(Pago, PagoAdmin)
 admin.site.register(Pedido, PedidoAdmin)
-admin.site.register(PedidoProducto, PedidoProductoAdmin)

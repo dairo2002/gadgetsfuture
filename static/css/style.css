@@ -12,22 +12,22 @@ body {
 
 .bg_footer,
 .bg_menu,
-.btn_buscador {    
+.btn_buscador {
     background-color: #115173;
 }
 
-.btn_buscador:hover {    
+.btn_buscador:hover {
     background-color: #115173;
 }
 
-.btn_carrito {    
+.btn_carrito {
     background-color: #115173;
     border-radius: 50%;
     width: 50px;
     height: 50px;
 }
 
-.btn_carrito:hover {    
+.btn_carrito:hover {
     background-color: #022C43;
 }
 
@@ -44,7 +44,7 @@ body {
 .tarjeta_productos img {
     height: 250px;
     transition: transform 0.3s ease;
-    overflow: hidden;    
+    overflow: hidden;
 }
 
 .tarjeta_productos img:hover {
@@ -57,6 +57,7 @@ body {
 .form_registrarse input:focus,
 .form_inicio_sesion input:focus,
 .form_pedido input:focus,
+.form_pedido select:focus,
 .form_pago input:focus,
 .form_filtro_precio input:focus {
     box-shadow: none;
