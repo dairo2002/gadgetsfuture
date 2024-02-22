@@ -31,8 +31,12 @@ def realizar_pedido(request, total=0, cantidad=0):
         return redirect("tienda")
 
     for articulo in carrito:
-        total += articulo.producto.precio * articulo.cantidad
-        cantidad += articulo.cantidad
+        if articulo.producto.descuento_con_precio():
+            total += articulo.producto.descuento_con_precio() * articulo.cantidad
+            cantidad += articulo.cantidad
+        else:
+            total += articulo.producto.precio * articulo.cantidad
+            cantidad += articulo.cantidad
 
     if request.method == "POST":
         formulario = PedidoForm(request.POST)

@@ -17,7 +17,7 @@ class RegistroForms(forms.ModelForm):
     class Meta:
         model = Cuenta
         # Traemos los campos del modelo de cuenta, que son aplicados al formulario,
-        fields = ["nombre", "apellido", "correo_electronico", "telefono", "password"]
+        fields = ["nombre", "apellido", "correo_electronico", "{telefono", "password"]
 
     # Funcion clean() validar campos
     def clean_confirm_pwd(self):

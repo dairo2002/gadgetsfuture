@@ -45,9 +45,9 @@
                 <div class="card-body">
                   <a href="{{ productos.get_url_producto }}"><img src="{{ productos.imagen.url }}" class="card-img-top rounded-3 mb-2" alt="imagen producto" /></a>
                   <h6 class="fw-semibold">{{ productos.nombre }}</h6>
-                  <span>$ {{ productos.descuento_con_precio|stringformat:'f' }}</span>
+                  <span>$ {{ productos.descuento_con_precio }}</span>
                   <del>
-                    <small class="text-muted mx-2">$ {{ productos.precio|stringformat:'f' }}</small>
+                    <small class="text-muted mx-2">$ {{ productos.precio }}</small>
                   </del>
                   {% if productos.stock <= 0 %}
                     <h5 class="card-title text-danger">Agotado</h5>
@@ -78,7 +78,7 @@
     </div>
   </section>
 
-  <!--                 
+  <!--                   
   <div class="col-md-8 mx-auto my-5">
     <div class="card bg-body-tertiary">
       <div class="card-body row p-3">
@@ -94,5 +94,5 @@
         </div>
       </div>
     </div>
-  </div>                -->
+  </div>                  -->
 {% endblock %}

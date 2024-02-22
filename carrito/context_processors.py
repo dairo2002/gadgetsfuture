@@ -7,21 +7,22 @@ from django.core.exceptions import ObjectDoesNotExist
 def mostrar_carrito(request, total=0, cantidad=0, carrito=None):
     try:
         if request.user.is_authenticated:
-            carrito = Carrito.objects.filter(
-                usuario=request.user, activo=True
-            )
+            carrito = Carrito.objects.filter(usuario=request.user, activo=True)
         else:
             carrito_sesion = CarritoSesion.objects.get(
                 carrito_session=_carrito_sesion(request)
             )
             carrito = Carrito.objects.filter(carritoSesion=carrito_sesion, activo=True)
         for articulo in carrito:
-            total += articulo.producto.precio * articulo.cantidad
-            cantidad += articulo.cantidad
+            if articulo.producto.descuento_con_precio():
+                total += articulo.producto.descuento_con_precio() * articulo.cantidad
+                cantidad += articulo.cantidad
+            else:
+                total += articulo.producto.precio * articulo.cantidad
+                cantidad += articulo.cantidad
     except ObjectDoesNotExist:
         pass
-    # retornamos en un diccionario, para ser utilizado en las dos vista
-    # return dict(total=total, cantidad=cantidad, articulo_carrito=carrito)
+
     return dict(total=total, articulo_carrito=carrito)
 
 

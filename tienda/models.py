@@ -52,6 +52,14 @@ class Producto(models.Model):
                 # Calcula el precio con descuento
                 precio_descuento = self.precio - (self.precio * descuento_decimal)
                 return precio_descuento
+            else:
+                # Si la fecha actual está fuera del rango de fechas de descuento, limpiar los campos relacionados con el descuento
+                self.categoria.descuento = None
+                self.categoria.fecha_inicio = None
+                self.categoria.fecha_fin = None
+                self.categoria.save()
+                return self.precio
+
         return self.precio
 
     # TODO Explicacion
