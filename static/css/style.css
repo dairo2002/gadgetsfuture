@@ -59,14 +59,14 @@ body {
 .form_pedido input:focus,
 .form_pedido select:focus,
 .form_pago input:focus,
-.form_filtro_precio input:focus {
+.form_filtro_precio input:focus{
     box-shadow: none;
     border-color: gray;
 }
 
 
 .offcanvas-footer {
-    background-color: #9eb8fa;
+    background-color: #115173;
 }
 
 #efectivo,

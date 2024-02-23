@@ -71,14 +71,14 @@
         {% endif %}
       {% endfor %}
     </div>
-    <div class="offcanvas-footer p-3">
+    <div class="offcanvas-footer p-3 text-white">
       <div class="d-flex justify-content-between mt-2">
-        <h5>Articulos</h5>
-        <h5 class="text-muted">{{ contar_productos }}</h5>
+        <h6>Articulos</h6>
+        <h6 class="text-white">{{ contar_productos }}</h6>
       </div>
       <div class="d-flex justify-content-between">
-        <h5>Total</h5>
-        <h5 class="text-muted">$ {{ total }}</h5>
+        <h6>Total</h6>
+        <h6 class="text-white">$ {{ total }}</h6>
       </div>
       <div class="d-flex justify-content-between my-3">
         <a class="btn btn-dark" href="{% url 'mostrar_carrito' %}">Ver Carrito</a>

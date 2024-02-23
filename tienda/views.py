@@ -133,3 +133,6 @@ def filtro_rango_precios(request):
         "tienda/tienda.html",
         {"filtro_precio": productos, "contador_producto": contar_productos},
     )
+
+
+

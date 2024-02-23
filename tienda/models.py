@@ -2,6 +2,7 @@ from django.db import models
 from django.urls import reverse
 from decimal import Decimal
 from django.utils import timezone
+from cuenta.models import Cuenta
 
 
 class Categoria(models.Model):
@@ -61,6 +62,22 @@ class Producto(models.Model):
                 return self.precio
 
         return self.precio
+
+
+class Valoraciones(models.Model):
+    producto = models.ForeignKey(Producto, on_delete=models.CASCADE)
+    usuario = models.ForeignKey(Cuenta, on_delete=models.CASCADE)
+    comentario = models.CharField(max_length=500)
+    calificacion = models.FloatField()
+    estado = models.BooleanField(default=True)
+    creado = models.DateField(default=timezone.now)
+    actualizado = models.DateField(default=timezone.now)
+
+    def __str__(self):
+        return self.usuario
+    
+
+
 
     # TODO Explicacion
 

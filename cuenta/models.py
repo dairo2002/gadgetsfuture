@@ -65,7 +65,7 @@ class Cuenta(AbstractBaseUser):
     # Permisos campos requeridos
     inicio_acceso = models.DateField(default=timezone.now)
     ultimo_acceso = models.DateField(default=timezone.now)
-    # Algunos campos son creados en ingles para no tener error, en el modelo pretederterminado que ofrece django
+    # Algunos campos son creados en ingles para no tener error al hacer las migraciones
     is_admin = models.BooleanField(default=False, verbose_name="Administrador")
     is_staff = models.BooleanField(default=False, verbose_name="Personal")
     # Por defecto activo sea administrador o usuario
